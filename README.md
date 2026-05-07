@@ -7,6 +7,9 @@ The repository contains python code for developing a language task based behavio
 ## For returning users
 1. Navigate to the project folder using the windows command line. You can open the windows cmd window by searching `cmd` in the windows search bar.
 2. Once you have opened it, you can navigate to the folder for this project. You can use the example below and replace the path after `cd` with your own path.
+
+**Note**: Press Enter after copy pasting a code chunk.
+
 ```bash
 cd your/project/folder
 ```
@@ -17,4 +20,14 @@ git pull
 4. Once you have the updated code, please update your environment.
 ```bash
 uv sync
+```
+
+5. When your environment is updated, copy paste the following code:
+```bash
+.venv\Scripts\activate
+```
+
+6. Run the behavioral experiment:
+```bash
+python -m main
 ```
