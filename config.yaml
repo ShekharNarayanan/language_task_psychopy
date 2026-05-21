@@ -1,0 +1,24 @@
+monitor:
+  name: my_lab_monitor
+  width_cm: 53.1
+  distance_cm: 60.0
+  width_px: 1920
+  height_px: 1080
+
+window:
+  size: [1080, 720]
+  units: deg
+  fullscreen: true
+
+stimuli:
+  audio_path: stimuli/audio1.mp3
+
+colors:
+  background: white
+  text: black
+  accent: blue
+  success: green
+  muted: gray
+
+audio:
+  backends: [sounddevice, pygame]
