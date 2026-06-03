@@ -1,16 +1,16 @@
 from psychopy import visual, event
 
 
-def run_fixation(win, cfg):
+def run_fixation(win, text_color):
     banner = visual.TextStim(
         win, text="Press SPACE to exit",
         pos=(0, 12), height=2,
-        color=cfg['colors']['text']
+        color=text_color
     )
     fixation = visual.TextStim(
         win, text="+",
         pos=(0, 0), height=1,
-        color=cfg['colors']['text']
+        color=text_color
     )
 
     while True:

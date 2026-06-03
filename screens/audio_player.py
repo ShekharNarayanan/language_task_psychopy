@@ -126,7 +126,7 @@ def _build_stims(win, col, total_dur):
 
 # ── Main ──────────────────────────────────────────────────────────────────────
 
-def run_audio_player(win, m, cfg):
+def run_audio_player(win, m, colors, audio_path):
     """
     Run the audio player screen.
 
@@ -144,8 +144,8 @@ def run_audio_player(win, m, cfg):
         m:   PsychoPy Mouse object.
         cfg: Config dict loaded from config.yaml.
     """
-    col   = cfg['colors']
-    audio = sound.Sound(cfg['stimuli']['audio_path'])
+    col   = colors
+    audio = sound.Sound(f'{audio_path}')
     dur   = audio.getDuration()
     clock = core.Clock()   # measures time elapsed since last play/seek
     s     = _build_stims(win, col, dur)
