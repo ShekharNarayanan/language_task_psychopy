@@ -1,5 +1,5 @@
 monitor:
-  name: my_lab_monitor
+  name: 'my_lab_monitor'
   width_cm: 53.1
   distance_cm: 60.0
   width_px: 1920
@@ -11,7 +11,14 @@ window:
   fullscreen: true
 
 stimuli:
-  audio_path: stimuli/audio1.mp3
+  welcome_text: 'In dit deel van het experiment ga je luisteren naar een nieuwe taal. Probeer aandachtig naar de taal te luisteren. Later zal je gevraagd worden naar wat je nog van de taal weet. Druk op space om te beginnen'
+
+  set_1:
+    n_trials: 1
+    primary_audio: 'stimuli\audio_set1.wav'
+    trial_1:
+      audio_paths: ['stimuli\set1_complete3.wav', 'stimuli\set1_complete2.wav', 'stimuli\set1_complete3.wav']
+
 
 colors:
   background: white
