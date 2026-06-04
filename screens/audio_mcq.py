@@ -3,9 +3,11 @@ audio_mcq.py
 ------------
 Multiple choice screen where each option is a playable audio clip.
 Participant must play all options at least once, then select one via
-checkbox and click Confirm to advance. Returns the index of the chosen option.
+checkbox and click Confirm to advance. Returns the selected index and
+whether it was correct.
 """
 
+import random
 from psychopy import visual, event, core, sound
 
 # ── Layout constants (degrees) ────────────────────────────────────────────────
@@ -88,16 +90,16 @@ def _make_player(win, col, label, y, audio_path):
     }
 
 
-def _build_screen_stims(win, col):
+def _build_screen_stims(win, col,trial_num):
     """Build stims that belong to the screen rather than individual players."""
     return {
         'title': visual.TextStim(
-            win, text="Choose the correct audio",
+            win, text=f" Trial num: {trial_num}",
             pos=(0, 10.5), height=1.1, bold=True,
             color=col['text']
         ),
         'instruction': visual.TextStim(
-            win, text="Play all options, then select one and confirm.",
+            win, text="Choose the correct audio file",
             pos=(0, 9.0), height=0.7,
             color=col['muted']
         ),
@@ -116,9 +118,13 @@ def _build_screen_stims(win, col):
 
 # ── Main ──────────────────────────────────────────────────────────────────────
 
-def run_audio_mcq(win, m, colors, audio_paths):
+def run_audio_mcq(win, m, colors, audio_paths,trial_num, correct_index=0):
     """
     Run the audio multiple choice screen.
+
+    Audio paths are shuffled on each call so the correct answer does not
+    always appear in the same position. The function tracks where the correct
+    answer lands after shuffling and compares it to the participant's choice.
 
     Each option has a play button and a checkbox. The confirm button activates
     only when all options have been played at least once and exactly one
@@ -126,19 +132,32 @@ def run_audio_mcq(win, m, colors, audio_paths):
     Only one audio plays at a time — starting a new one stops the current.
 
     Args:
-        win:         PsychoPy Window object.
-        m:           PsychoPy Mouse object.
-        colors:      Colors dict from config (keys: text, accent, muted, success).
-        audio_paths: List of 2–4 audio file paths, one per option.
+        win:           PsychoPy Window object.
+        m:             PsychoPy Mouse object.
+        colors:        Colors dict from config (keys: text, accent, muted, success).
+        audio_paths:   List of 2–4 audio file paths, one per option. The correct
+                       answer is identified by correct_index into this list before
+                       shuffling.
+        correct_index: Index into audio_paths pointing to the correct answer
+                       (default 0, i.e. the first path is always correct).
 
     Returns:
-        Index (int) of the selected option (0 = A, 1 = B, etc.).
+        Tuple (correct_position, selected_index, is_correct) where selected_index is the position
+        of the chosen option in the shuffled display order (0 = A, 1 = B, etc.)
+        and is_correct is True if the participant chose the correct answer.
     """
-    col    = colors
-    screen = _build_screen_stims(win, col)
+    col = colors
+
+    # Shuffle paths while tracking where the correct answer ends up
+    indexed = list(enumerate(audio_paths))
+    random.shuffle(indexed)
+    original_indices, shuffled_paths = zip(*indexed)
+    correct_position = list(original_indices).index(correct_index)
+
+    screen  = _build_screen_stims(win, col, trial_num)
     players = [
         _make_player(win, col, _LABELS[i], _OPTION_START_Y - i * _OPTION_SPACING, path)
-        for i, path in enumerate(audio_paths)
+        for i, path in enumerate(shuffled_paths)
     ]
 
     while True:
@@ -212,7 +231,9 @@ def run_audio_mcq(win, m, colors, audio_paths):
             if can_confirm and _hit(mx, my, *_CONFIRM_POS, _CONFIRM_W, _CONFIRM_H):
                 for p in players:
                     p['audio'].stop()
-                return next(i for i, p in enumerate(players) if p['checked'])
+                selected = next(i for i, p in enumerate(players) if p['checked'])
+                is_correct = selected == correct_position
+                return correct_position, selected, is_correct
 
         if "escape" in event.getKeys():
             for p in players:
