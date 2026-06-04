@@ -10,16 +10,6 @@ window:
   units: deg
   fullscreen: true
 
-stimuli:
-  welcome_text: 'In dit deel van het experiment ga je luisteren naar een nieuwe taal. Probeer aandachtig naar de taal te luisteren. Later zal je gevraagd worden naar wat je nog van de taal weet. Druk op space om te beginnen'
-
-  set_1:
-    n_trials: 1
-    primary_audio: 'stimuli\audio_set1.wav'
-    trial_1:
-      audio_paths: ['stimuli\set1_complete3.wav', 'stimuli\set1_complete2.wav', 'stimuli\set1_complete3.wav']
-
-
 colors:
   background: white
   text: black
@@ -29,3 +19,113 @@ colors:
 
 audio:
   backends: [sounddevice, pygame]
+
+stimuli:
+  welcome_text: 'In dit deel van het experiment ga je luisteren naar een nieuwe taal. Probeer aandachtig naar de taal te luisteren. Later zal je gevraagd worden naar wat je nog van de taal weet. Druk op de spatiebalk om te beginnen.'
+  test_text   : 'Je wordt nu gevraagd naar jouw indruk van de taal die je net hebt gehoord. Je krijgt steeds meerdere woorden te zien op het scherm. Als je op het icoon  klikt bij een woord kan je het beluisteren. Je kan de woorden zo vaak beluisteren als je wilt. Kies telkens het woord dat jou het meest bekend voorkomt op basis van de taal die je zojuist hebt gehoord. Probeer af te gaan op je intuitie. Druk op de spatiebalk om te beginnen..'
+  set_1:
+    n_trials: 34
+    primary_audio: 'stimuli\task1\Set1\audio_set1.wav'
+
+    trial_1:
+      correct: 0
+      audio_paths: ['stimuli\task1\Set1\set1_words1.wav', 'stimuli\task1\Set1\set1_foils1.wav', 'stimuli\task1\Set1\set1_foils2.wav']
+    trial_2:
+      correct: 0
+      audio_paths: ['stimuli\task1\Set1\set1_words2.wav', 'stimuli\task1\Set1\set1_foils3.wav', 'stimuli\task1\Set1\set1_foils5.wav']
+    trial_3:
+      correct: 0
+      audio_paths: ['stimuli\task1\Set1\set1_words3.wav', 'stimuli\task1\Set1\set1_foils8.wav', 'stimuli\task1\Set1\set1_foils10.wav']
+    trial_4:
+      correct: 0
+      audio_paths: ['stimuli\task1\Set1\set1_words4.wav', 'stimuli\task1\Set1\set1_foils7.wav', 'stimuli\task1\Set1\set1_foils11.wav']
+    trial_5:
+      correct: 0
+      audio_paths: ['stimuli\task1\Set1\set1_words5.wav', 'stimuli\task1\Set1\set1_foils6.wav', 'stimuli\task1\Set1\set1_foils13.wav']
+    trial_6:
+      correct: 0
+      audio_paths: ['stimuli\task1\Set1\set1_words6.wav', 'stimuli\task1\Set1\set1_foils6.wav', 'stimuli\task1\Set1\set1_foils7.wav']
+    trial_7:
+      correct: 0
+      audio_paths: ['stimuli\task1\Set1\set1_words7.wav', 'stimuli\task1\Set1\set1_foils10.wav', 'stimuli\task1\Set1\set1_foils13.wav']
+    trial_8:
+      correct: 0
+      audio_paths: ['stimuli\task1\Set1\set1_words8.wav', 'stimuli\task1\Set1\set1_foils4.wav', 'stimuli\task1\Set1\set1_foils5.wav']
+    trial_9:
+      correct: 0
+      audio_paths: ['stimuli\task1\Set1\set1_words1.wav', 'stimuli\task1\Set1\set1_foils12.wav', 'stimuli\task1\Set1\set1_foils1.wav']
+    trial_10:
+      correct: 0
+      audio_paths: ['stimuli\task1\Set1\set1_words2.wav', 'stimuli\task1\Set1\set1_foils10.wav', 'stimuli\task1\Set1\set1_foils9.wav']
+    trial_11:
+      correct: 0
+      audio_paths: ['stimuli\task1\Set1\set1_words3.wav', 'stimuli\task1\Set1\set1_foils2.wav', 'stimuli\task1\Set1\set1_foils14.wav']
+    trial_12:
+      correct: 0
+      audio_paths: ['stimuli\task1\Set1\set1_words4.wav', 'stimuli\task1\Set1\set1_foils6.wav', 'stimuli\task1\Set1\set1_foils14.wav']
+    trial_13:
+      correct: 0
+      audio_paths: ['stimuli\task1\Set1\set1_words5.wav', 'stimuli\task1\Set1\set1_foils11.wav', 'stimuli\task1\Set1\set1_foils12.wav']
+    trial_14:
+      correct: 0
+      audio_paths: ['stimuli\task1\Set1\set1_words6.wav', 'stimuli\task1\Set1\set1_foils13.wav', 'stimuli\task1\Set1\set1_foils14.wav']
+    trial_15:
+      correct: 0
+      audio_paths: ['stimuli\task1\Set1\set1_words7.wav', 'stimuli\task1\Set1\set1_foils3.wav', 'stimuli\task1\Set1\set1_foils4.wav']
+    trial_16:
+      correct: 0
+      audio_paths: ['stimuli\task1\Set1\set1_words8.wav', 'stimuli\task1\Set1\set1_foils9.wav', 'stimuli\task1\Set1\set1_foils8.wav']
+    trial_17:
+      correct: 0
+      audio_paths: ['stimuli\task1\Set1\set1_words1.wav', 'stimuli\task1\Set1\set1_foils8.wav', 'stimuli\task1\Set1\set1_foils2.wav', 'stimuli\task1\Set1\set1_foils11.wav']
+    trial_18:
+      correct: 0
+      audio_paths: ['stimuli\task1\Set1\set1_words2.wav', 'stimuli\task1\Set1\set1_foils10.wav', 'stimuli\task1\Set1\set1_foils6.wav', 'stimuli\task1\Set1\set1_foils3.wav']
+    trial_19:
+      correct: 0
+      audio_paths: ['stimuli\task1\Set1\set1_words3.wav', 'stimuli\task1\Set1\set1_foils9.wav', 'stimuli\task1\Set1\set1_foils1.wav', 'stimuli\task1\Set1\set1_foils2.wav']
+    trial_20:
+      correct: 0
+      audio_paths: ['stimuli\task1\Set1\set1_words4.wav', 'stimuli\task1\Set1\set1_foils13.wav', 'stimuli\task1\Set1\set1_foils12.wav', 'stimuli\task1\Set1\set1_foils4.wav']
+    trial_21:
+      correct: 0
+      audio_paths: ['stimuli\task1\Set1\set1_words5.wav', 'stimuli\task1\Set1\set1_foils9.wav', 'stimuli\task1\Set1\set1_foils8.wav', 'stimuli\task1\Set1\set1_foils1.wav']
+    trial_22:
+      correct: 0
+      audio_paths: ['stimuli\task1\Set1\set1_words6.wav', 'stimuli\task1\Set1\set1_foils3.wav', 'stimuli\task1\Set1\set1_foils5.wav', 'stimuli\task1\Set1\set1_foils12.wav']
+    trial_23:
+      correct: 0
+      audio_paths: ['stimuli\task1\Set1\set1_words7.wav', 'stimuli\task1\Set1\set1_foils11.wav', 'stimuli\task1\Set1\set1_foils7.wav', 'stimuli\task1\Set1\set1_foils4.wav']
+    trial_24:
+      correct: 0
+      audio_paths: ['stimuli\task1\Set1\set1_words8.wav', 'stimuli\task1\Set1\set1_foils14.wav', 'stimuli\task1\Set1\set1_foils5.wav', 'stimuli\task1\Set1\set1_foils7.wav']
+    trial_25:
+      correct: 0
+      audio_paths: ['stimuli\task1\Set1\set1_disylltarget1.wav', 'stimuli\task1\Set1\set1_disyllfoil1.wav']
+    trial_26:
+      correct: 0
+      audio_paths: ['stimuli\task1\Set1\set1_disylltarget2.wav', 'stimuli\task1\Set1\set1_disyllfoil2.wav']
+    trial_27:
+      correct: 0
+      audio_paths: ['stimuli\task1\Set1\set1_disylltarget3.wav', 'stimuli\task1\Set1\set1_disyllfoil3.wav']
+    trial_28:
+      correct: 0
+      audio_paths: ['stimuli\task1\Set1\set1_disylltarget4.wav', 'stimuli\task1\Set1\set1_disyllfoil4.wav']
+    trial_29:
+      correct: 0
+      audio_paths: ['stimuli\task1\Set1\set1_disylltarget5.wav', 'stimuli\task1\Set1\set1_disyllfoil5.wav']
+    trial_30:
+      correct: 0
+      audio_paths: ['stimuli\task1\Set1\set1_disylltarget6.wav', 'stimuli\task1\Set1\set1_disyllfoil6.wav']
+    trial_31:
+      correct: 0
+      audio_paths: ['stimuli\task1\Set1\set1_disylltarget7.wav', 'stimuli\task1\Set1\set1_disyllfoil7.wav', 'stimuli\task1\Set1\set1_disyllfoil8.wav', 'stimuli\task1\Set1\set1_disyllfoil9.wav']
+    trial_32:
+      correct: 0
+      audio_paths: ['stimuli\task1\Set1\set1_disylltarget8.wav', 'stimuli\task1\Set1\set1_disyllfoil10.wav', 'stimuli\task1\Set1\set1_disyllfoil11.wav', 'stimuli\task1\Set1\set1_disyllfoil12.wav']
+    trial_33:
+      correct: 0
+      audio_paths: ['stimuli\task1\Set1\set1_disylltarget9.wav', 'stimuli\task1\Set1\set1_disyllfoil13.wav', 'stimuli\task1\Set1\set1_disyllfoil14.wav', 'stimuli\task1\Set1\set1_disyllfoil15.wav']
+    trial_34:
+      correct: 0
+      audio_paths: ['stimuli\task1\Set1\set1_disylltarget10.wav', 'stimuli\task1\Set1\set1_disyllfoil16.wav', 'stimuli\task1\Set1\set1_disyllfoil17.wav', 'stimuli\task1\Set1\set1_disyllfoil18.wav']
