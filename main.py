@@ -28,11 +28,13 @@ if  __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--p_id', required=True, help='Participant ID')
     parser.add_argument('--set_num',required=True)
+    parser.add_argument('--test_run',required=True)
     args = parser.parse_args()
 
     # get pid and set_num
     participant_id = args.p_id
     set_num        = args.set_num
+    test_run_flag  = args.test_run
 
     # load config file for chosen set
     cfg_set_path = root / f'config_set{set_num}.yaml'
@@ -59,16 +61,23 @@ if  __name__ == '__main__':
     full_scr        = sys_cfg['window']['fullscreen']
 
     # texts for different screens
-    welcome_text   = cfg_set['welcome_text']
-    testing_text   = cfg_set['test_text']
+    welcome_text          = cfg_set['welcome_text']
+    testing_text          = cfg_set['test_text']
+    exit_instruction      = sys_cfg['exit_instruction']
 
-    # get info for part 1
+    # get audio path for primary idea in part 1
     primary_audio_part_1       = cfg_set['part_1']['primary_audio']
-    total_trials_part_1        = cfg_set['part_1']['n_trials']
 
-    # get info for part 2
-    total_trials_part_2        = 1 #cfg_set['part_2']['n_trials']
+    # get display message for part 2
     part2_msg                  = cfg_set['part_2']['part_2_msg']
+
+    if not test_run_flag:
+        # get full trials
+        total_trials_part_1        = cfg_set['part_1']['n_trials']
+        total_trials_part_2        = cfg_set['part_2']['n_trials']
+    else:
+        total_trials_part_1        = sys_cfg['test_trials_part_1']
+        total_trials_part_2        = sys_cfg['test_trials_part_1']
 
 
     # create monitor object
@@ -96,7 +105,7 @@ if  __name__ == '__main__':
     # define participant params
     participant_results = []
 
-
+    # ------------------------------------------------------------ part 1 ---------------------------------------------------------------------------------------------
     # run process for part 1
     show_instruction(win=win, text=welcome_text, text_color=text_color)
     run_audio_player(win=win, m=m, colors=all_colors, audio_path=primary_audio_part_1)
@@ -112,7 +121,7 @@ if  __name__ == '__main__':
         participant_results.append({
         'participant_id'  :  participant_id,
         'part'            :  1,
-        'trial_num'       :  i + 1,
+        'trial_num'       :  i,
         'correct_option'  :  correct,
         'selected_option' :  selected,
         'is_correct':        is_correct,        
@@ -120,12 +129,12 @@ if  __name__ == '__main__':
 
     trial_offset = total_trials_part_1 # remember the trial at which part 1 ended
 
+    # ------------------------------------------------------------ part 2 ---------------------------------------------------------------------------------------------
     # show transition screen to part 2
     show_instruction(win=win, text=part2_msg, text_color=text_color)
 
     for j in range(1,total_trials_part_2+1):
         trial_num       = j + trial_offset # include offset, use this number to display on screen and in the participant data
-
         audios_j_trial  = cfg_set['part_2'][f'trial_{j}']['audio_paths']
         primary_audio   = audios_j_trial[0]
         options         = audios_j_trial[1:]
@@ -141,11 +150,13 @@ if  __name__ == '__main__':
         'is_correct':        is_correct,        
         })
 
-
-
-    # run_fixation(win, text_color=text_color)
     participant_df = pd.DataFrame(participant_results)
-    win.close()
-    print("participant details")
-    print(participant_df.head())
+    show_instruction(win=win, text=exit_instruction, text_color=text_color)
+    # win.close()
+    if test_run_flag:
+        output_path = root / 'output' / f'participant_{participant_id}_set_{set_num}_test.csv'
+        participant_df.to_csv(output_path)
+    else:
+        output_path = root / 'output' / f'participant_{participant_id}_set_{set_num}.csv'
+        participant_df.to_csv(output_path)
     core.quit()
