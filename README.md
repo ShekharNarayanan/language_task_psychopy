@@ -29,5 +29,10 @@ uv sync
 
 6. Run the behavioral experiment:
 ```bash
-python -m main
+python -m main --p_id 1 --set_num 1 --test_run True
 ```
+
+Meaning of parameters:
+1. `pid`        : the participant number for this current session. Can be any integer.
+2. `set_num`    : the set for which the audio files have to be played. Can be 1 or 2.
+3. `test_run`   : to run the test version of the experiment. If the flag is set to `True` you will get **one** trial for each part of the experiment. If set to `False`, you get all the trials of the experiment. You can change these in the `system_config.yaml` file.
