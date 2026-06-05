@@ -2,7 +2,7 @@
 audio_player.py
 ---------------
 Audio playback screen with a seekable progress bar and play/pause toggle.
-Participants must play the audio at least once before continuing.
+The participant must play the audio at least once before they can continue.
 """
 
 from psychopy import visual, event, core, sound
@@ -28,26 +28,26 @@ _CLICK_DEBOUNCE =  0.2    # seconds to wait after a button click to prevent doub
 # ── Helpers ───────────────────────────────────────────────────────────────────
 
 def _fmt(seconds):
-    """Convert a duration in seconds to a 'm:ss' display string."""
+    """Convert seconds to a 'm:ss' string for display."""
     s = int(max(0, seconds))
     return f"{s // 60}:{s % 60:02d}"
 
 
 def _ratio(mouse_x):
     """
-    Map a mouse x-position to a 0-1 seek ratio along the seek bar.
-    Clamps to [0, 1] so clicks outside the bar don't overshoot.
+    Convert a mouse x-position to a 0–1 position along the seek bar.
+    Clamped so clicking outside the bar doesn't overshoot.
     """
     return max(0.0, min(1.0, (mouse_x - _SEEK_LEFT) / _SEEK_W))
 
 
 def _hit(mx, my, cx, cy, w, h):
-    """Return True if (mx, my) is inside an axis-aligned rectangle."""
+    """Return True if the mouse click landed inside a rectangle."""
     return abs(mx - cx) <= w / 2 and abs(my - cy) <= h / 2
 
 
 def _on_seekbar(mx, my):
-    """Return True if the mouse is within the clickable seek bar region."""
+    """Return True if the mouse click landed on the seek bar."""
     return (abs(my - _SEEK_Y) < _SEEK_HIT_PAD
             and _SEEK_LEFT - 0.5 <= mx <= _SEEK_RIGHT + 0.5)
 
@@ -56,13 +56,11 @@ def _on_seekbar(mx, my):
 
 def _build_stims(win, col, total_dur):
     """
-    Instantiate and return all visual stimuli as a dict.
+    Create all visual elements and return them as a dict.
 
-    Keeping construction here and out of the frame loop makes run_audio_player
-    easier to read - the loop only handles logic, not object creation.
-
-    Draw order is determined by insertion order (Python 3.7+): title first,
-    continue button last.
+    Built once before the frame loop starts — the loop only updates and draws,
+    it doesn't create anything. Draw order follows dict insertion order (Python 3.7+):
+    title first, continue button last.
     """
     return {
         'title': visual.TextStim(
@@ -76,8 +74,8 @@ def _build_stims(win, col, total_dur):
             pos=(0, _SEEK_Y),
             fillColor=col['muted'], lineColor=None
         ),
-        # Fill rect: we manually compute centre pos each frame to avoid
-        # relying on anchor='left' which is not available in older PsychoPy
+        # Fill rect: centre position is computed manually each frame because
+        # anchor='left' is not available in older PsychoPy versions
         'seek_fill': visual.Rect(
             win, width=0.01, height=_SEEK_H,
             pos=(_SEEK_LEFT, _SEEK_Y),
@@ -110,7 +108,7 @@ def _build_stims(win, col, total_dur):
             pos=_PLAY_POS, height=0.85, bold=True,
             color='white'
         ),
-        # Continue button - fillColor toggled green once audio has been played
+        # Continue button — turns green once the audio has been played at least once
         'cont_bg': visual.Rect(
             win, width=_CONT_W, height=_CONT_H,
             pos=_CONT_POS,
@@ -128,21 +126,22 @@ def _build_stims(win, col, total_dur):
 
 def run_audio_player(win, m, colors, audio_path):
     """
-    Run the audio player screen.
+    Run the primary audio playback screen.
 
     Each iteration of the while loop is one display frame. The loop:
       1. Advances the playhead if audio is playing.
-      2. Updates seek bar visuals to reflect current progress.
-      3. Draws all stimuli and flips the window.
+      2. Updates the seek bar to reflect current playback position.
+      3. Draws everything and flips the window.
       4. Handles mouse clicks (seek, play/pause, continue).
 
-    Blocks until the participant clicks Continue, which is only enabled after
-    the audio has been played at least once. Escape quits the experiment.
+    The Continue button stays gray and unclickable until the audio has been
+    played at least once. Escape quits the experiment at any point.
 
     Args:
-        win: PsychoPy Window object.
-        m:   PsychoPy Mouse object.
-        cfg: Config dict loaded from config.yaml.
+        win:        PsychoPy Window object.
+        m:          PsychoPy Mouse object.
+        colors:     Colors dict from config (keys: text, accent, muted, success).
+        audio_path: Path to the audio file to play.
     """
     col   = colors
     audio = sound.Sound(f'{audio_path}')
@@ -159,7 +158,7 @@ def run_audio_player(win, m, colors, audio_path):
 
         # ── 1. Advance playhead ───────────────────────────────────────────────
         if is_playing:
-            # elapsed = where we started + how long clock has been running
+            # elapsed = where we started + how long the clock has been running
             elapsed = min(play_start + clock.getTime(), dur)
             if elapsed >= dur:
                 # Audio finished naturally - reset to stopped state
@@ -191,7 +190,7 @@ def run_audio_player(win, m, colors, audio_path):
             mx, my = m.getPos()
 
             if _on_seekbar(mx, my):
-                # Scrub to clicked position; resume playing if already playing
+                # Scrub to clicked position; keep playing if already playing
                 elapsed    = _ratio(mx) * dur
                 play_start = elapsed
                 audio.stop()
