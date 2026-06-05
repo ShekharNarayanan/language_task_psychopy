@@ -19,3 +19,8 @@ colors:
 
 audio:
   backends: [sounddevice, pygame]
+
+# experiment params that have to do with both sets
+exit_instruction: 'Dit was het einde van deze taak. Druk op de spatiebalk om af te sluiten'
+test_trials_part_1: 1
+test_trials_part_2: 1
