@@ -1,3 +1,16 @@
+#ignore
 .venv
 __pycache__**
-Stimuli_task1_experimentIris
+stimuli/Task_PhonSL.xlsx
+stimuli/task1/set1/*
+stimuli/task1/set2/*
+output/*
+
+# keep
+!stimuli/.gitkeep
+!stimuli/task1/set1/.gitkeep
+!stimuli/task1/set2/.gitkeep
+!output/.gitkeep
+
+
+
