@@ -6,8 +6,7 @@ Generic instruction screen that displays a block of text and advances on SPACE.
 
 from psychopy import visual, event
 
-
-def run_instruction(win, text, text_color):
+def show_instruction(win, text, text_color):
     """
     Display an instruction screen and wait for SPACE to continue.
 
@@ -18,9 +17,9 @@ def run_instruction(win, text, text_color):
     """
     stim = visual.TextStim(
         win, text=text,
-        pos=(0, 0), height=1.0,
+        pos=(0, 0), height=0.8,
         color=text_color,
-        wrapWidth=30   # wraps long text within the screen
+        wrapWidth=35   # wraps long text within the screen
     )
 
     while True:
