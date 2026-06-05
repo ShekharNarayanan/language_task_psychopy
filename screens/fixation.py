@@ -3,13 +3,14 @@ from psychopy import visual, event
 
 def run_fixation(win, text_color):
     banner = visual.TextStim(
-        win, text="Press SPACE to exit",
+        win, text="Press SPACE to proceed to the next part",
         pos=(0, 12), height=2,
         color=text_color
     )
     fixation = visual.TextStim(
         win, text="+",
-        pos=(0, 0), height=1,
+        pos=(0, 0), height=0.5,
+        wrapWidth=50,
         color=text_color
     )
 
