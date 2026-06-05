@@ -1,17 +1,20 @@
 """
 audio_mcq.py
 ------------
-Multiple choice screen where each option is a playable audio clip.
-Participant must play all options at least once, then select one via
-checkbox and click Confirm to advance. Returns the selected index and
-whether it was correct.
+Multiple choice screens where each option is a playable audio clip.
+
+Part 1: Standard MCQ — options only, participant picks the one that sounds
+        most like the language they heard.
+
+Part 2: Same MCQ but with a primary audio clip shown at the top of the screen.
+        The primary must be played first before the options become available.
 """
 
 import random
 from psychopy import visual, event, core, sound
 
-# ── Layout constants (degrees) ────────────────────────────────────────────────
-_OPTION_START_Y  =  7.0    # y position of the first audio option
+# ---- Layout constants (degrees) ------------------------------------------------------------------------------------------------
+_OPTION_START_Y  =  3.5 # 7.0    # y position of the first audio option
 _OPTION_SPACING  =  4.5    # vertical distance between options
 _LABEL_X         = -13.0   # x position of the A/B/C label
 _PLAY_X          = -9.0    # x centre of the play button
@@ -23,37 +26,44 @@ _CONFIRM_POS     = (10.0, -10.0)
 _CONFIRM_W       =  5.0
 _CONFIRM_H       =  1.8
 _CLICK_DEBOUNCE  =  0.2
+
+# Part 2 primary player sits above the MCQ options
+_PRIMARY_Y       =  7.0 #  just below the instruction text
+_PRIMARY_POS     = (0.0, _PRIMARY_Y)   # centred horizontally (-9.0, _PRIMARY_Y)
+_PRIMARY_W       =  3.5
+_PRIMARY_H       =  1.4
+_PRIMARY_LABEL_X = -5.0    # label to the left of the play button -13.0
+
 _LABELS          = ['A', 'B', 'C', 'D']
 
 
-# ── Helpers ───────────────────────────────────────────────────────────────────
+# ---- Shared helpers ------------------------------------------------------------------------------------------------------------------------
 
 def _hit(mx, my, cx, cy, w, h):
-    """Return True if (mx, my) is inside an axis-aligned rectangle."""
+    """Return True if the mouse click landed inside a rectangle."""
     return abs(mx - cx) <= w / 2 and abs(my - cy) <= h / 2
 
 
 def _make_player(win, col, label, y, audio_path):
     """
-    Build stims and state dict for a single audio option.
+    Build one audio option row — its label, play button, checkbox, and
+    playback state — and return everything as a single dict.
 
-    Uses a clock to detect natural end of playback, consistent with the
-    primary audio player, avoiding unreliable backend-specific attributes
-    like isPlaying or isFinished.
+    Playback end is detected using a clock rather than PsychoPy's isPlaying
+    or isFinished, which behave inconsistently across audio backends.
 
     Args:
         win:        PsychoPy Window.
         col:        Colors dict from config.
-        label:      Option label string ('A', 'B', 'C', 'D').
-        y:          Vertical centre position for this option (degrees).
-        audio_path: Path to the audio file.
+        label:      Letter shown next to this option ('A', 'B', 'C', 'D').
+        y:          Vertical position of this row on screen (degrees).
+        audio_path: Path to this option's audio file.
 
     Returns:
-        A dict with all stims and playback state for this option.
+        Dict containing all stims and playback state for this option.
     """
     audio = sound.Sound(audio_path)
     return {
-        # ── Stims ─────────────────────────────────────────────────────────────
         'lbl': visual.TextStim(
             win, text=label,
             pos=(_LABEL_X, y), height=1.0, bold=True,
@@ -65,7 +75,7 @@ def _make_player(win, col, label, y, audio_path):
             fillColor=col['accent'], lineColor=None
         ),
         'play_lbl': visual.TextStim(
-            win, text="▶  Play",
+            win, text="Play",
             pos=(_PLAY_X, y), height=0.7, bold=True,
             color='white'
         ),
@@ -79,22 +89,70 @@ def _make_player(win, col, label, y, audio_path):
             pos=(_CHECK_X, y), height=0.8, bold=True,
             color=col['accent']
         ),
-        # ── Playback state ────────────────────────────────────────────────────
         'audio':      audio,
-        'dur':        audio.getDuration(),   # used to detect natural end
-        'clock':      core.Clock(),          # measures time since play was pressed
+        'dur':        audio.getDuration(),
+        'clock':      core.Clock(),
         'y':          y,
         'is_playing': False,
-        'played':     False,   # True once played at least once
-        'checked':    False,   # True if this option is selected
+        'played':     False,
+        'checked':    False,
     }
 
 
-def _build_screen_stims(win, col,trial_num):
-    """Build stims that belong to the screen rather than individual players."""
+def _make_primary_player(win, col, audio_path):
+    """
+    Build the primary audio player for part 2 — a single play button at the
+    top of the screen with no checkbox. Same clock-based end detection as
+    the MCQ options.
+
+    Args:
+        win:        PsychoPy Window.
+        col:        Colors dict from config.
+        audio_path: Path to the primary audio file.
+
+    Returns:
+        Dict containing stims and playback state for the primary player.
+    """
+    audio = sound.Sound(audio_path)
     return {
+        'lbl': visual.TextStim(
+            win, text="Reference",
+            pos=(_PRIMARY_LABEL_X, _PRIMARY_Y), height=1.0, bold=True,
+            color=col['text']
+        ),
+        'play_bg': visual.Rect(
+            win, width=_PRIMARY_W, height=_PRIMARY_H,
+            pos=_PRIMARY_POS,
+            fillColor=col['accent'], lineColor=None
+        ),
+        'play_lbl': visual.TextStim(
+            win, text="Play",
+            pos=_PRIMARY_POS, height=0.7, bold=True,
+            color='white'
+        ),
+        'audio':      audio,
+        'dur':        audio.getDuration(),
+        'clock':      core.Clock(),
+        'is_playing': False,
+        'played':     False,   # gate — MCQ options locked until this is True
+    }
+
+
+def _build_screen_stims(win, col, trial_num, show_divider=False):
+    """
+    Build the title, instruction, optional divider, and confirm button
+    shared across all options.
+
+    Args:
+        win:          PsychoPy Window.
+        col:          Colors dict from config.
+        trial_num:    Trial number shown in the title.
+        show_divider: If True, adds a label separating the primary player
+                      from the MCQ options (used in part 2).
+    """
+    stims = {
         'title': visual.TextStim(
-            win, text=f" Trial num: {trial_num}",
+            win, text=f"Trial {trial_num}",
             pos=(0, 10.5), height=1.1, bold=True,
             color=col['text']
         ),
@@ -114,37 +172,55 @@ def _build_screen_stims(win, col,trial_num):
             color='white'
         ),
     }
+    if show_divider:
+        stims['divider'] = visual.TextStim(
+            win, text="--- Options ---",
+            pos=(0, _OPTION_START_Y + 1.5), height=0.7,
+            color=col['muted']
+        )
+
+    return stims
 
 
-# ── Main ──────────────────────────────────────────────────────────────────────
+def _stop_all(players):
+    """Stop all currently playing audio in a player list and reset their state."""
+    for p in players:
+        if p['is_playing']:
+            p['audio'].stop()
+            p['is_playing']    = False
+            p['play_lbl'].text = "Play"
 
-def run_audio_mcq(win, m, colors, audio_paths,trial_num, correct_index=0):
+
+# ---- Part 1 ----------------------------------------------------------------------------------------------------------------------------------------
+
+def run_audio_mcq_part1(win, m, colors, audio_paths, trial_num, correct_index=0):
     """
-    Run the audio multiple choice screen.
+    Run one part 1 multiple choice trial.
 
-    Audio paths are shuffled on each call so the correct answer does not
-    always appear in the same position. The function tracks where the correct
-    answer lands after shuffling and compares it to the participant's choice.
+    The audio options are shuffled before display so the correct answer
+    doesn't always appear in the same position. We record where the correct
+    answer ended up after shuffling so we can compare it to what the
+    participant picked.
 
-    Each option has a play button and a checkbox. The confirm button activates
-    only when all options have been played at least once and exactly one
-    checkbox is ticked. Checking a new option unchecks the previous one.
-    Only one audio plays at a time — starting a new one stops the current.
+    The Confirm button only becomes active once all options have been played
+    at least once and one checkbox is ticked. Only one audio can play at a
+    time — pressing play on one option stops any other that is playing.
 
     Args:
         win:           PsychoPy Window object.
         m:             PsychoPy Mouse object.
         colors:        Colors dict from config (keys: text, accent, muted, success).
-        audio_paths:   List of 2–4 audio file paths, one per option. The correct
-                       answer is identified by correct_index into this list before
-                       shuffling.
-        correct_index: Index into audio_paths pointing to the correct answer
-                       (default 0, i.e. the first path is always correct).
+        audio_paths:   List of 2-4 audio file paths. The correct answer is
+                       whichever path sits at correct_index before shuffling.
+        trial_num:     Trial number shown as the screen title.
+        correct_index: Which path in audio_paths is the correct answer
+                       (default 0, meaning the first path is always correct).
 
     Returns:
-        Tuple (correct_position, selected_index, is_correct) where selected_index is the position
-        of the chosen option in the shuffled display order (0 = A, 1 = B, etc.)
-        and is_correct is True if the participant chose the correct answer.
+        Tuple (correct_position, selected, is_correct):
+            correct_position -- where the correct answer ended up after shuffling (0 = A, etc.)
+            selected         -- which option the participant picked (0 = A, etc.)
+            is_correct       -- True if the participant picked the correct answer.
     """
     col = colors
 
@@ -162,21 +238,20 @@ def run_audio_mcq(win, m, colors, audio_paths,trial_num, correct_index=0):
 
     while True:
 
-        # ── 1. Update each player's playback state ────────────────────────────
+        # ---- 1. Update playback states ----------------------------------------------------------------------------------
         for p in players:
             if p['is_playing'] and p['clock'].getTime() >= p['dur']:
-                # Audio finished naturally — reset to stopped state
                 p['audio'].stop()
                 p['is_playing']    = False
-                p['play_lbl'].text = "▶  Play"
+                p['play_lbl'].text = "Play"
 
-        # ── 2. Update confirm button state ────────────────────────────────────
+        # ---- 2. Update confirm button ------------------------------------------------------------------------------------
         all_played  = all(p['played'] for p in players)
         any_checked = any(p['checked'] for p in players)
         can_confirm = all_played and any_checked
         screen['confirm_bg'].fillColor = col['success'] if can_confirm else col['muted']
 
-        # ── 3. Draw ───────────────────────────────────────────────────────────
+        # ---- 3. Draw ----------------------------------------------------------------------------------------------------------------------
         for stim in screen.values():
             stim.draw()
 
@@ -190,36 +265,28 @@ def run_audio_mcq(win, m, colors, audio_paths,trial_num, correct_index=0):
 
         win.flip()
 
-        # ── 4. Mouse input ────────────────────────────────────────────────────
+        # ---- 4. Mouse input --------------------------------------------------------------------------------------------------------
         if m.getLeftButtonPressed():
             mx, my = m.getPos()
 
             for p in players:
-
                 if _hit(mx, my, _PLAY_X, p['y'], _PLAY_W, _PLAY_H):
-                    # Toggle play / pause; stop any other currently playing option
                     if p['is_playing']:
                         p['audio'].stop()
                         p['is_playing']    = False
-                        p['play_lbl'].text = "▶  Play"
+                        p['play_lbl'].text = "Play"
                     else:
-                        for other in players:
-                            if other['is_playing']:
-                                other['audio'].stop()
-                                other['is_playing']    = False
-                                other['play_lbl'].text = "▶  Play"
-                        p['audio'].stop()
+                        _stop_all(players)
                         p['audio'].seek(0)
                         p['audio'].play()
-                        p['clock'].reset()    # clock now measures time since play
+                        p['clock'].reset()
                         p['is_playing']    = True
                         p['played']        = True
-                        p['play_lbl'].text = "⏸  Pause"
+                        p['play_lbl'].text = "Pause"
                     core.wait(_CLICK_DEBOUNCE)
                     break
 
                 if _hit(mx, my, _CHECK_X, p['y'], _CHECK_SIZE * 2, _CHECK_SIZE * 2):
-                    # Single select — uncheck all others, toggle this one
                     checked_now = not p['checked']
                     for other in players:
                         other['checked'] = False
@@ -227,16 +294,167 @@ def run_audio_mcq(win, m, colors, audio_paths,trial_num, correct_index=0):
                     core.wait(_CLICK_DEBOUNCE)
                     break
 
-            # Confirm button — only fires when gate conditions are met
             if can_confirm and _hit(mx, my, *_CONFIRM_POS, _CONFIRM_W, _CONFIRM_H):
-                for p in players:
-                    p['audio'].stop()
-                selected = next(i for i, p in enumerate(players) if p['checked'])
+                _stop_all(players)
+                selected   = next(i for i, p in enumerate(players) if p['checked'])
                 is_correct = selected == correct_position
                 return correct_position, selected, is_correct
 
         if "escape" in event.getKeys():
-            for p in players:
+            _stop_all(players)
+            win.close()
+            core.quit()
+
+
+# ---- Part 2 ----------------------------------------------------------------------------------------------------------------------------------------
+
+def run_audio_mcq_part2(win, m, colors, primary_audio, audio_paths, trial_num, correct_index=0):
+    """
+    Run one part 2 multiple choice trial.
+
+    Same logic as part 1 but with a primary (reference) audio clip shown at
+    the top of the screen. The primary must be played at least once before
+    the MCQ options become clickable. After that, all options must be played
+    before Confirm activates.
+
+    Args:
+        win:           PsychoPy Window object.
+        m:             PsychoPy Mouse object.
+        colors:        Colors dict from config (keys: text, accent, muted, success).
+        primary_audio: Path to the reference audio shown at the top of the screen.
+        audio_paths:   List of 2-4 MCQ option audio file paths. The correct answer
+                       is whichever path sits at correct_index before shuffling.
+        trial_num:     Trial number shown as the screen title.
+        correct_index: Which path in audio_paths is the correct answer
+                       (default 0, meaning the first path is always correct).
+
+    Returns:
+        Tuple (correct_position, selected, is_correct):
+            correct_position -- where the correct answer ended up after shuffling (0 = A, etc.)
+            selected         -- which option the participant picked (0 = A, etc.)
+            is_correct       -- True if the participant picked the correct answer.
+    """
+    col = colors
+
+    # Shuffle MCQ paths while tracking where the correct answer ends up
+    indexed = list(enumerate(audio_paths))
+    random.shuffle(indexed)
+    original_indices, shuffled_paths = zip(*indexed)
+    correct_position = list(original_indices).index(correct_index)
+
+    primary = _make_primary_player(win, col, primary_audio)
+    screen  = _build_screen_stims(win, col, trial_num, show_divider=True)
+    players = [
+        _make_player(win, col, _LABELS[i], _OPTION_START_Y - i * _OPTION_SPACING, path)
+        for i, path in enumerate(shuffled_paths)
+    ]
+
+    while True:
+
+        # ---- 1. Update primary playback state --------------------------------------------------------------------
+        if primary['is_playing'] and primary['clock'].getTime() >= primary['dur']:
+            primary['audio'].stop()
+            primary['is_playing']    = False
+            primary['play_lbl'].text = "Play"
+
+        # ---- 2. Update MCQ playback states --------------------------------------------------------------------------
+        options_unlocked = primary['played']
+        for p in players:
+            if p['is_playing'] and p['clock'].getTime() >= p['dur']:
                 p['audio'].stop()
+                p['is_playing']    = False
+                p['play_lbl'].text = "Play"
+
+        # ---- 3. Update button states --------------------------------------------------------------------------------------
+        all_played  = options_unlocked and all(p['played'] for p in players)
+        any_checked = any(p['checked'] for p in players)
+        can_confirm = all_played and any_checked
+
+        # Option play buttons are grayed out until primary has been played
+        for p in players:
+            p['play_bg'].fillColor = col['accent'] if options_unlocked else col['muted']
+        screen['confirm_bg'].fillColor = col['success'] if can_confirm else col['muted']
+
+        # ---- 4. Draw ----------------------------------------------------------------------------------------------------------------------
+        primary['lbl'].draw()
+        primary['play_bg'].draw()
+        primary['play_lbl'].draw()
+
+        for stim in screen.values():
+            stim.draw()
+
+        for p in players:
+            p['check_mark'].text = 'X' if p['checked'] else ''
+            p['lbl'].draw()
+            p['play_bg'].draw()
+            p['play_lbl'].draw()
+            p['check_bg'].draw()
+            p['check_mark'].draw()
+
+        win.flip()
+
+        # ---- 5. Mouse input --------------------------------------------------------------------------------------------------------
+        if m.getLeftButtonPressed():
+            mx, my = m.getPos()
+
+            # Primary play button — always clickable
+            if _hit(mx, my, *_PRIMARY_POS, _PRIMARY_W, _PRIMARY_H):
+                if primary['is_playing']:
+                    primary['audio'].stop()
+                    primary['is_playing']    = False
+                    primary['play_lbl'].text = "Play"
+                else:
+                    _stop_all(players)
+                    primary['audio'].stop()
+                    primary['audio'].seek(0)
+                    primary['audio'].play()
+                    primary['clock'].reset()
+                    primary['is_playing']    = True
+                    primary['played']        = True
+                    primary['play_lbl'].text = "Pause"
+                core.wait(_CLICK_DEBOUNCE)
+
+            # MCQ options — only clickable after primary has been played
+            elif options_unlocked:
+                for p in players:
+                    if _hit(mx, my, _PLAY_X, p['y'], _PLAY_W, _PLAY_H):
+                        if p['is_playing']:
+                            p['audio'].stop()
+                            p['is_playing']    = False
+                            p['play_lbl'].text = "Play"
+                        else:
+                            _stop_all(players)
+                            # Also stop primary if it somehow started again
+                            if primary['is_playing']:
+                                primary['audio'].stop()
+                                primary['is_playing']    = False
+                                primary['play_lbl'].text = "Play"
+                            p['audio'].seek(0)
+                            p['audio'].play()
+                            p['clock'].reset()
+                            p['is_playing']    = True
+                            p['played']        = True
+                            p['play_lbl'].text = "Pause"
+                        core.wait(_CLICK_DEBOUNCE)
+                        break
+
+                    if _hit(mx, my, _CHECK_X, p['y'], _CHECK_SIZE * 2, _CHECK_SIZE * 2):
+                        checked_now = not p['checked']
+                        for other in players:
+                            other['checked'] = False
+                        p['checked'] = checked_now
+                        core.wait(_CLICK_DEBOUNCE)
+                        break
+
+                if can_confirm and _hit(mx, my, *_CONFIRM_POS, _CONFIRM_W, _CONFIRM_H):
+                    _stop_all(players)
+                    primary['audio'].stop()
+                    selected   = next(i for i, p in enumerate(players) if p['checked'])
+                    is_correct = selected == correct_position
+                    return correct_position, selected, is_correct
+
+        if "escape" in event.getKeys():
+            _stop_all(players)
+            primary['audio'].stop()
             win.close()
             core.quit()
