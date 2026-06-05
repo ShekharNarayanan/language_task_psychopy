@@ -1,8 +1,8 @@
-stimuli:
-  welcome_text: 'In dit deel van het experiment ga je luisteren naar een nieuwe taal. Probeer aandachtig naar de taal te luisteren. Later zal je gevraagd worden naar wat je nog van de taal weet. Druk op de spatiebalk om te beginnen.'
-  test_text   : 'Je wordt nu gevraagd naar jouw indruk van de taal die je net hebt gehoord. Je krijgt steeds meerdere woorden te zien op het scherm. Als je op het icoon  klikt bij een woord kan je het beluisteren. Je kan de woorden zo vaak beluisteren als je wilt. Kies telkens het woord dat jou het meest bekend voorkomt op basis van de taal die je zojuist hebt gehoord. Probeer af te gaan op je intuitie. Druk op de spatiebalk om te beginnen..'
 
-  part_1:  
+welcome_text: 'In dit deel van het experiment ga je luisteren naar een nieuwe taal. Probeer aandachtig naar de taal te luisteren. Later zal je gevraagd worden naar wat je nog van de taal weet. Druk op de spatiebalk om te beginnen.'
+test_text   : 'Je wordt nu gevraagd naar jouw indruk van de taal die je net hebt gehoord. Je krijgt steeds meerdere woorden te zien op het scherm. Als je op het icoon  klikt bij een woord kan je het beluisteren. Je kan de woorden zo vaak beluisteren als je wilt. Kies telkens het woord dat jou het meest bekend voorkomt op basis van de taal die je zojuist hebt gehoord. Probeer af te gaan op je intuitie. Druk op de spatiebalk om te beginnen..'
+
+part_1:  
   n_trials: 34
   primary_audio: 'stimuli\task1\set2\audio_set2.wav'
 
@@ -110,9 +110,45 @@ stimuli:
     audio_paths: ['stimuli\task1\set2\set2_disylltarget10.wav', 'stimuli\task1\set2\set2_disyllfoil16.wav', 'stimuli\task1\set2\set2_disyllfoil17.wav', 'stimuli\task1\set2\set2_disyllfoil18.wav']
 
 part_2:
+  n_trials: 8
   part_2_msg: "Kies bij deze woorden de lettergreep die het woord volgens jou het beste afmaakt op basis van de taal die je eerder hebt gehoord. Druk op de spatiebalk om verder te gaan."
 
-  trial_34:
+  trial_1:
     correct: 0
-    audio_paths: ['stimuli\task1\set2\set2_disylltarget10.wav', 'stimuli\task1\set2\set2_disyllfoil16.wav', 'stimuli\task1\set2\set2_disyllfoil17.wav', 'stimuli\task1\set2\set2_disyllfoil18.wav']
+    primary_audio: 'stimuli\task1\set2\set2_complete1.wav'
+    audio_paths: ['stimuli\task1\set2\set2_syll2.wav', 'stimuli\task1\set2\set2_syll13.wav', 'stimuli\task1\set2\set2_syll9.wav']
 
+  trial_2:
+    correct: 0
+    primary_audio: 'stimuli\task1\set2\set2_complete2.wav'
+    audio_paths: ['stimuli\task1\set2\set2_syll4.wav', 'stimuli\task1\set2\set2_syll6.wav', 'stimuli\task1\set2\set2_syll16.wav']
+
+  trial_3:
+    correct: 0
+    primary_audio: 'stimuli\task1\set2\set2_complete3.wav'
+    audio_paths: ['stimuli\task1\set2\set2_syll5.wav', 'stimuli\task1\set2\set2_syll14.wav', 'stimuli\task1\set2\set2_syll3.wav']
+
+  trial_4:
+    correct: 0
+    primary_audio: 'stimuli\task1\set2\set2_complete4.wav'
+    audio_paths: ['stimuli\task1\set2\set2_syll9.wav', 'stimuli\task1\set2\set2_syll15.wav', 'stimuli\task1\set2\set2_syll4.wav']
+
+  trial_5:
+    correct: 0
+    primary_audio: 'stimuli\task1\set2\set2_complete5.wav'
+    audio_paths: ['stimuli\task1\set2\set2_syll12.wav', 'stimuli\task1\set2\set2_syll7.wav', 'stimuli\task1\set2\set2_syll1.wav']
+
+  trial_6:
+    correct: 0
+    primary_audio: 'stimuli\task1\set2\set2_complete6.wav'
+    audio_paths: ['stimuli\task1\set2\set2_syll14.wav', 'stimuli\task1\set2\set2_syll8.wav', 'stimuli\task1\set2\set2_syll12.wav']
+
+  trial_7:
+    correct: 0
+    primary_audio: 'stimuli\task1\set2\set2_complete7.wav'
+    audio_paths: ['stimuli\task1\set2\set2_syll1.wav', 'stimuli\task1\set2\set2_syll2.wav', 'stimuli\task1\set2\set2_syll5.wav']
+
+  trial_8:
+    correct: 0
+    primary_audio: 'stimuli\task1\set2\set2_complete8.wav'
+    audio_paths: ['stimuli\task1\set2\set2_syll3.wav', 'stimuli\task1\set2\set2_syll11.wav', 'stimuli\task1\set2\set2_syll10.wav']
