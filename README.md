@@ -58,14 +58,14 @@ Meaning of parameters:
     - [1.2.3 Part 2, syllable completion](#123-part-2-syllable-completion)
     - [1.2.4 Confidence ratings](#124-confidence-ratings)
     - [1.2.5 Results output](#125-results-output)
-  - [1.3 Installation and usage](#13-installation-and-usage)
-    - [1.3.1 Clone the repository](#131-clone-the-repository)
-    - [1.3.2 Install dependencies](#132-install-dependencies)
-    - [1.3.3 Run the experiment](#133-run-the-experiment)
 - [2. Project layout and configuration](#2-project-layout-and-configuration)
   - [2.1 Project structure](#21-project-structure)
   - [2.2 What each module does](#22-what-each-module-does)
   - [2.3 Configuration](#23-configuration)
+- [3. Installation and usage](#3-installation-and-usage)
+  - [3.1 Clone the repository](#31-clone-the-repository)
+  - [3.2 Install dependencies](#32-install-dependencies)
+  - [3.3 Run the experiment](#33-run-the-experiment)
 
 ---
 
@@ -86,7 +86,7 @@ All instructions are presented in Dutch. The experiment supports multiple stimul
 ```
 Welcome screen
     |
-Primary audio exposure (seekable player, ~15 min)
+Primary audio exposure (seekable player)
     |
 Pre-test instruction screen
     |
@@ -142,16 +142,16 @@ Results are saved as `results_<participant_id>.csv` in the project root. One row
 
 ---
 
-### 1.3 Installation and usage
+## 3. Installation and usage
 
-#### 1.3.1 Clone the repository
+### 3.1 Clone the repository
 
 ```bash
-git clone <repo_url>
-cd <repo_folder>
+git clone https://github.com/ShekharNarayanan/language_task_psychopy.git
+cd language_task_psychopy
 ```
 
-#### 1.3.2 Install dependencies
+### 3.2 Install dependencies
 
 This project uses [uv](https://docs.astral.sh/uv/) for environment and dependency management with Python 3.10.
 
@@ -167,7 +167,7 @@ Main dependencies:
 - `pyyaml` for loading config files
 - `pandas` for results output
 
-#### 1.3.3 Run the experiment
+### 3.3 Run the experiment
 
 ```bash
 python -m main --p_id 1 --set_num 1 --test_run True
@@ -216,7 +216,7 @@ Press **Escape** or **Q** at any point to quit the experiment.
 
 ### 2.3 Configuration
 
-Machine-level settings and common instructions live in `system_config.yaml`:
+Machine-level settings live in `system_config.yaml`:
 
 ```yaml
 monitor:
