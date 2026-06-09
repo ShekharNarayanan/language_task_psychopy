@@ -19,9 +19,10 @@ from psychopy import monitors, visual, core, gui
 from psychopy.hardware import mouse
 
 
-from screens.audio_player import run_audio_player
-from screens.audio_mcq    import run_audio_mcq_part1, run_audio_mcq_part2
+from screens.audio_player  import run_audio_player
+from screens.audio_mcq     import run_audio_mcq_part1, run_audio_mcq_part2
 from screens.instructions  import show_instruction
+from screens.rating        import run_rating
 # from screens.fixation     import run_fixation
 
 if  __name__ == '__main__':
@@ -63,6 +64,7 @@ if  __name__ == '__main__':
     # texts for different screens
     welcome_text          = cfg_set['welcome_text']
     testing_text          = cfg_set['test_text']
+    rating_instruction    = sys_cfg['rating_instruction']
     exit_instruction      = sys_cfg['exit_instruction']
 
     # get audio path for primary idea in part 1
@@ -114,8 +116,9 @@ if  __name__ == '__main__':
     # loop all trials for part 1
     for i in range(1,total_trials_part_1+1):
 
-        audios_i_trial = cfg_set['part_1'][f'trial_{i}']['audio_paths']
-        correct, selected, is_correct = run_audio_mcq_part1(win,m,all_colors,audio_paths=audios_i_trial, trial_num=i)
+        audios_i_trial = cfg_set['part_1'][f'trial_{i}']['audio_paths'] # get audios
+        correct, selected, is_correct = run_audio_mcq_part1(win,m,all_colors,audio_paths=audios_i_trial, trial_num=i) # show options to choose from
+        confidence_rating = run_rating(win,text_color=text_color,rating_text=rating_instruction) # show confidence screen
         
         # save participant info
         participant_results.append({
@@ -124,7 +127,8 @@ if  __name__ == '__main__':
         'trial_num'       :  i,
         'correct_option'  :  correct,
         'selected_option' :  selected,
-        'is_correct':        is_correct,        
+        'is_correct'      :  is_correct, 
+        'confidence'      :  confidence_rating   
         })
 
     trial_offset = total_trials_part_1 # remember the trial at which part 1 ended
@@ -140,6 +144,7 @@ if  __name__ == '__main__':
         options         = audios_j_trial[1:]
 
         correct, selected, is_correct = run_audio_mcq_part2(win=win,m=m,colors=all_colors,primary_audio=primary_audio,audio_paths=options,trial_num=trial_num)
+        confidence_rating = run_rating(win,text_color=text_color,rating_text=rating_instruction) 
 
         participant_results.append({
         'participant_id'  :  participant_id,
@@ -147,7 +152,8 @@ if  __name__ == '__main__':
         'trial_num'       :  trial_num,
         'correct_option'  :  correct,
         'selected_option' :  selected,
-        'is_correct':        is_correct,        
+        'is_correct'      :  is_correct,   
+        'confidence'      :  confidence_rating        
         })
 
     participant_df = pd.DataFrame(participant_results)
