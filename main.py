@@ -23,7 +23,7 @@ from screens.audio_player  import run_audio_player
 from screens.audio_mcq     import run_audio_mcq_part1, run_audio_mcq_part2
 from screens.instructions  import show_instruction
 from screens.rating        import run_rating
-# from screens.fixation     import run_fixation
+
 
 if  __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -139,8 +139,8 @@ if  __name__ == '__main__':
 
     for j in range(1,total_trials_part_2+1):
         trial_num       = j + trial_offset # include offset, use this number to display on screen and in the participant data
+        primary_audio   = cfg_set['part_2'][f'trial_{j}']['primary_audio']
         audios_j_trial  = cfg_set['part_2'][f'trial_{j}']['audio_paths']
-        primary_audio   = audios_j_trial[0]
         options         = audios_j_trial[1:]
 
         correct, selected, is_correct = run_audio_mcq_part2(win=win,m=m,colors=all_colors,primary_audio=primary_audio,audio_paths=options,trial_num=trial_num)
