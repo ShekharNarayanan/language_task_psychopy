@@ -141,7 +141,7 @@ if  __name__ == '__main__':
         trial_num       = j + trial_offset # include offset, use this number to display on screen and in the participant data
         primary_audio   = cfg_set['part_2'][f'trial_{j}']['primary_audio']
         audios_j_trial  = cfg_set['part_2'][f'trial_{j}']['audio_paths']
-        options         = audios_j_trial[1:]
+        options         = audios_j_trial
 
         correct, selected, is_correct = run_audio_mcq_part2(win=win,m=m,colors=all_colors,primary_audio=primary_audio,audio_paths=options,trial_num=trial_num)
         confidence_rating = run_rating(win,text_color=text_color,rating_text=rating_instruction) 
