@@ -19,10 +19,10 @@ from psychopy import monitors, visual, core, gui
 from psychopy.hardware import mouse
 
 
-from screens.audio_player  import run_audio_player
-from screens.audio_mcq     import run_audio_mcq_part1, run_audio_mcq_part2
-from screens.instructions  import show_instruction
-from screens.rating        import run_rating
+from screens.task1.audio_player  import run_audio_player
+from screens.task1.audio_mcq     import run_audio_mcq_part1, run_audio_mcq_part2
+from screens.utils.instructions  import show_instruction
+from screens.utils.rating        import run_rating
 
 
 if  __name__ == '__main__':
