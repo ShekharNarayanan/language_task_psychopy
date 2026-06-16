@@ -19,39 +19,12 @@ from psychopy.hardware import mouse
 
 from screens.utils.instructions  import show_instruction
 from screens.utils.rating        import run_rating
+from screens.utils.task2_utils import extract_trials, build_constrained_trial_sequence, extract_part2_trials
+
 from screens.task2.exposure   import run_task2_part1
 from screens.task2.testing   import run_task2_part2
 
 
-def _get_part1_trials(cfg_set):
-    """
-    Collect all congruent and incongruent trials from the config into a
-    flat list, tag each with its condition, then shuffle randomly.
-
-    Returns a list of dicts ready to iterate over in the trial loop.
-    """
-    trials = []
-
-    for trial_key, trial_data in cfg_set['part_1']['congruent'].items():
-        if not trial_key.startswith('trial_'):
-            continue
-        trials.append({
-            'condition':  'congruent',
-            'sentence_a': trial_data['sentence_a'],
-            'sentence_b': trial_data['sentence_b'],
-        })
-
-    for trial_key, trial_data in cfg_set['part_1']['incongruent'].items():
-        if not trial_key.startswith('trial_'):
-            continue
-        trials.append({
-            'condition':  'incongruent',
-            'sentence_a': trial_data['sentence_a'],
-            'sentence_b': trial_data['sentence_b'],
-        })
-
-    random.shuffle(trials)
-    return trials
 
 
 if __name__ == '__main__':
@@ -126,8 +99,9 @@ if __name__ == '__main__':
     # ── Part 1 ────────────────────────────────────────────────────────────────
     show_instruction(win=win, text=welcome_text, text_color=text_color)
 
-    part1_trials = _get_part1_trials(cfg_set)[:total_trials_part_1]
-
+    congruent_pool   = extract_trials(cfg_set['part_1'], 'congruent',   'congruent')
+    incongruent_pool = extract_trials(cfg_set['part_1'], 'incongruent', 'incongruent')
+    part1_trials     = build_constrained_trial_sequence(congruent_pool, incongruent_pool)[:total_trials_part_1]
     for i, trial in enumerate(part1_trials, start=1):
         chosen_answer = run_task2_part1(
             win=win, m=m, colors=all_colors,
@@ -156,19 +130,20 @@ if __name__ == '__main__':
     # ── Part 2 ────────────────────────────────────────────────────────────────
     show_instruction(win=win, text=part2_msg, text_color=text_color)
 
-    for j in range(1, total_trials_part_2 + 1):
-        trial_num    = j + trial_offset
-        trial_cfg    = cfg_set['part_2'][f'trial_{j}']
+    geen_pool, real_pool = extract_part2_trials(cfg_set['part_2'])
+    part2_trials = build_constrained_trial_sequence(real_pool, geen_pool)[:total_trials_part_2]
 
+    for j, trial in enumerate(part2_trials, start=1):
+        trial_num = j + trial_offset
         chosen_answer, is_correct = run_task2_part2(
             win=win, m=m, colors=all_colors,
             trial_num=trial_num,
-            audio_word=trial_cfg['audio_word'],
-            audio_sentence_a=trial_cfg['sentence_a'],
-            audio_sentence_b=trial_cfg['sentence_b'],
-            correct_answer=trial_cfg['correct_answer'],
-            incorrect_answer1=trial_cfg['incorrect_answer1'],
-            incorrect_answer2=trial_cfg['incorrect_answer2'],
+            audio_word=trial['audio_word'],
+            audio_sentence_a=trial['sentence_a'],
+            audio_sentence_b=trial['sentence_b'],
+            correct_answer=trial['correct_answer'],
+            incorrect_answer1=trial['incorrect_answer1'],
+            incorrect_answer2=trial['incorrect_answer2'],
         )
         confidence_rating = run_rating(
             win, text_color=text_color,
