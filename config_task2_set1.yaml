@@ -1,0 +1,255 @@
+part_1:
+  instruction: 'In deze taak lees en hoor je telkens twee zinnen die eindigen op hetzelfde nieuwe woord. Typ na het lezen en luisteren van de zinnen in het tekstvak wat jij denkt dat de betekenis van het nieuwe woord is op basis van de twee zinnen. Als je denkt dat het woord op basis van de zinnen geen congruente betekenis heeft, dan klik'
+
+  geen_betekenis_label: 'geen betekenis'
+
+  congruent:
+    n_trials: 10
+
+    trial_1:
+      sentence_a: 'Van het harde geluid schrok de jopes'
+      sentence_b: 'De moeder is bevallen van een nieuwe jopes'
+
+    trial_2:
+      sentence_a: 'Will was klaar voor een termier'
+      sentence_b: 'Catherine ging lunchen tijdens haar termier'
+
+    trial_3:
+      sentence_a: 'De jongens hielpen Jack met het schoonmaken van zijn heip'
+      sentence_b: 'Suzy neemt liever de fiets dan de heipree'
+
+    trial_4:
+      sentence_a: 'Chris viel in slaap achter zijn stiezer'
+      sentence_b: 'Hij zat te werken aan zijn stiezer'
+
+    trial_5:
+      sentence_a: 'Peter sloot zijn toltes'
+      sentence_b: 'Zonder bril deed de zon pijn aan Kate''s toltes'
+
+    trial_6:
+      sentence_a: 'Er zat geen water meer in het roelje'
+      sentence_b: 'De weg was bedekt met gebroken roelje'
+
+    trial_7:
+      sentence_a: 'Jack grijnsde en bood haar zijn grizaat'
+      sentence_b: 'Jill schrijft met haar linker grizaat'
+
+    trial_8:
+      sentence_a: 'Er was niets mis met het opwicht'
+      sentence_b: 'Het huis was donker zonder opwicht'
+
+    trial_9:
+      sentence_a: 'Door haast vergat hij zijn plurmer'
+      sentence_b: 'De jongens kregen hamburgers mee voor de plurmer'
+
+    trial_10:
+      sentence_a: 'Er was iets mis met de blipse'
+      sentence_b: 'Joan gaf haar baby wat warme blipse'
+
+  incongruent:
+    n_trials: 10
+
+    trial_11:
+      sentence_a: 'Daniel keek op zijn bagwak'
+      sentence_b: 'Anna werd boos en verhief haar bagwak'
+
+    trial_12:
+      sentence_a: 'Weinig landen hebben tegenwoordig nog een buzite'
+      sentence_b: 'Joan kookte de eieren in buzite'
+
+    trial_13:
+      sentence_a: 'Onze nieuwe groene auto blokkeerde de smalle talgado'
+      sentence_b: 'Een speurhond gaat af op de talgado'
+
+    trial_14:
+      sentence_a: 'Zijn ring viel af in de bandeek'
+      sentence_b: 'Julie brak het schermpje van haar nieuwe bandeek'
+
+    trial_15:
+      sentence_a: 'De appeltaart had een heerlijke magel'
+      sentence_b: 'Ted woont langs een grind magel'
+
+    trial_16:
+      sentence_a: 'Hij kocht ze in de jutost'
+      sentence_b: 'Hij waste de vuile vaat in de jutost'
+
+    trial_17:
+      sentence_a: 'Het beboste meer gaf een prachtig dojunt'
+      sentence_b: 'In het paleis wonen de koning en dojunt'
+
+    trial_18:
+      sentence_a: 'In de verte hoorden ze een lagenus'
+      sentence_b: 'Ze kocht melk in de kleine lagenus'
+
+    trial_19:
+      sentence_a: 'John schonk voor zichzelf een glas droen'
+      sentence_b: 'Ze keken elkaar aan en zeiden geen droen'
+
+    trial_20:
+      sentence_a: 'Hij sloop de kamer binnen zonder een bodupe'
+      sentence_b: 'De bovenste verdieping had een geweldig bodupe'
+
+part_2:
+  instruction: 'Nu word je gevraagd naar de betekenissen van de woorden die je zojuist hebt geleerd. Kies de betekenis van het woord, of kies "geen betekenis" als het woord geen congruente betekenis had.'
+
+  n_trials: 20
+
+  trial_1:
+    audio_word: 'stimuli/task2/set1/jopes.wav'
+    sentence_a: 'stimuli/task2/set1/sentence1a.wav'
+    sentence_b: 'stimuli/task2/set1/sentence1b.wav'
+    correct_answer: baby
+    incorrect_answer1: auto
+    incorrect_answer2: geen betekenis
+
+  trial_2:
+    audio_word: 'stimuli/task2/set1/termier.wav'
+    sentence_a: 'stimuli/task2/set1/sentence2a.wav'
+    sentence_b: 'stimuli/task2/set1/sentence2b.wav'
+    correct_answer: pauze
+    incorrect_answer1: ogen
+    incorrect_answer2: geen betekenis
+
+  trial_3:
+    audio_word: 'stimuli/task2/set1/heipree.wav'
+    sentence_a: 'stimuli/task2/set1/sentence3a.wav'
+    sentence_b: 'stimuli/task2/set1/sentence3b.wav'
+    correct_answer: auto
+    incorrect_answer1: lunch
+    incorrect_answer2: geen betekenis
+
+  trial_4:
+    audio_word: 'stimuli/task2/set1/stiezer.wav'
+    sentence_a: 'stimuli/task2/set1/sentence4a.wav'
+    sentence_b: 'stimuli/task2/set1/sentence4b.wav'
+    correct_answer: bureau
+    incorrect_answer1: glas
+    incorrect_answer2: geen betekenis
+
+  trial_5:
+    audio_word: 'stimuli/task2/set1/toltes.wav'
+    sentence_a: 'stimuli/task2/set1/sentence5a.wav'
+    sentence_b: 'stimuli/task2/set1/sentence5b.wav'
+    correct_answer: ogen
+    incorrect_answer1: bureau
+    incorrect_answer2: geen betekenis
+
+  trial_6:
+    audio_word: 'stimuli/task2/set1/roelje.wav'
+    sentence_a: 'stimuli/task2/set1/sentence6a.wav'
+    sentence_b: 'stimuli/task2/set1/sentence6b.wav'
+    correct_answer: glas
+    incorrect_answer1: melk
+    incorrect_answer2: geen betekenis
+
+  trial_7:
+    audio_word: 'stimuli/task2/set1/grizaat.wav'
+    sentence_a: 'stimuli/task2/set1/sentence7a.wav'
+    sentence_b: 'stimuli/task2/set1/sentence7b.wav'
+    correct_answer: hand
+    incorrect_answer1: pauze
+    incorrect_answer2: geen betekenis
+
+  trial_8:
+    audio_word: 'stimuli/task2/set1/opwicht.wav'
+    sentence_a: 'stimuli/task2/set1/sentence8a.wav'
+    sentence_b: 'stimuli/task2/set1/sentence8b.wav'
+    correct_answer: licht
+    incorrect_answer1: baby
+    incorrect_answer2: geen betekenis
+
+  trial_9:
+    audio_word: 'stimuli/task2/set1/plurmer.wav'
+    sentence_a: 'stimuli/task2/set1/sentence9a.wav'
+    sentence_b: 'stimuli/task2/set1/sentence9b.wav'
+    correct_answer: lunch
+    incorrect_answer1: licht
+    incorrect_answer2: geen betekenis
+
+  trial_10:
+    audio_word: 'stimuli/task2/set1/blipse.wav'
+    sentence_a: 'stimuli/task2/set1/sentence10a.wav'
+    sentence_b: 'stimuli/task2/set1/sentence10b.wav'
+    correct_answer: melk
+    incorrect_answer1: hand
+    incorrect_answer2: geen betekenis
+
+  trial_11:
+    audio_word: 'stimuli/task2/set1/bagwak.wav'
+    sentence_a: 'stimuli/task2/set1/sentence11a.wav'
+    sentence_b: 'stimuli/task2/set1/sentence11b.wav'
+    correct_answer: geen betekenis
+    incorrect_answer1: baby
+    incorrect_answer2: ogen
+
+  trial_12:
+    audio_word: 'stimuli/task2/set1/buzite.wav'
+    sentence_a: 'stimuli/task2/set1/sentence12a.wav'
+    sentence_b: 'stimuli/task2/set1/sentence12b.wav'
+    correct_answer: geen betekenis
+    incorrect_answer1: pauze
+    incorrect_answer2: melk
+
+  trial_13:
+    audio_word: 'stimuli/task2/set1/talgado.wav'
+    sentence_a: 'stimuli/task2/set1/sentence13a.wav'
+    sentence_b: 'stimuli/task2/set1/sentence13b.wav'
+    correct_answer: geen betekenis
+    incorrect_answer1: auto
+    incorrect_answer2: baby
+
+  trial_14:
+    audio_word: 'stimuli/task2/set1/bandeek.wav'
+    sentence_a: 'stimuli/task2/set1/sentence14a.wav'
+    sentence_b: 'stimuli/task2/set1/sentence14b.wav'
+    correct_answer: geen betekenis
+    incorrect_answer1: bureau
+    incorrect_answer2: licht
+
+  trial_15:
+    audio_word: 'stimuli/task2/set1/magel.wav'
+    sentence_a: 'stimuli/task2/set1/sentence15a.wav'
+    sentence_b: 'stimuli/task2/set1/sentence15b.wav'
+    correct_answer: geen betekenis
+    incorrect_answer1: ogen
+    incorrect_answer2: glas
+
+  trial_16:
+    audio_word: 'stimuli/task2/set1/jutost.wav'
+    sentence_a: 'stimuli/task2/set1/sentence16a.wav'
+    sentence_b: 'stimuli/task2/set1/sentence16b.wav'
+    correct_answer: geen betekenis
+    incorrect_answer1: glas
+    incorrect_answer2: bureau
+
+  trial_17:
+    audio_word: 'stimuli/task2/set1/dojunt.wav'
+    sentence_a: 'stimuli/task2/set1/sentence17a.wav'
+    sentence_b: 'stimuli/task2/set1/sentence17b.wav'
+    correct_answer: geen betekenis
+    incorrect_answer1: hand
+    incorrect_answer2: auto
+
+  trial_18:
+    audio_word: 'stimuli/task2/set1/lagenus.wav'
+    sentence_a: 'stimuli/task2/set1/sentence18a.wav'
+    sentence_b: 'stimuli/task2/set1/sentence18b.wav'
+    correct_answer: geen betekenis
+    incorrect_answer1: lunch
+    incorrect_answer2: hand
+
+  trial_19:
+    audio_word: 'stimuli/task2/set1/droen.wav'
+    sentence_a: 'stimuli/task2/set1/sentence19a.wav'
+    sentence_b: 'stimuli/task2/set1/sentence19b.wav'
+    correct_answer: geen betekenis
+    incorrect_answer1: licht
+    incorrect_answer2: pauze
+
+  trial_20:
+    audio_word: 'stimuli/task2/set1/bodupe.wav'
+    sentence_a: 'stimuli/task2/set1/sentence20a.wav'
+    sentence_b: 'stimuli/task2/set1/sentence20b.wav'
+    correct_answer: geen betekenis
+    incorrect_answer1: melk
+    incorrect_answer2: lunch
