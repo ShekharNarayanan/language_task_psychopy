@@ -19,8 +19,8 @@ from psychopy.hardware import mouse
 
 from screens.utils.instructions  import show_instruction
 from screens.utils.rating        import run_rating
-from screens.task2.task2_part1   import run_task2_part1
-from screens.task2.task2_part2   import run_task2_part2
+from screens.task2.exposure   import run_task2_part1
+from screens.task2.testing   import run_task2_part2
 
 
 def _get_part1_trials(cfg_set):

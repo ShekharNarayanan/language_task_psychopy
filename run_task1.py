@@ -38,7 +38,7 @@ if  __name__ == '__main__':
     test_run_flag  = args.test_run
 
     # load config file for chosen set
-    cfg_set_path = root / f'config_set{set_num}.yaml'
+    cfg_set_path = root / f'config_task1_set{set_num}.yaml'
     with open (cfg_set_path) as f:
         cfg_set = yaml.safe_load(f)
 
@@ -65,7 +65,7 @@ if  __name__ == '__main__':
     welcome_text          = cfg_set['welcome_text']
     testing_text          = cfg_set['test_text']
     rating_instruction    = sys_cfg['rating_instruction']
-    exit_instruction      = sys_cfg['exit_instruction']
+    exit_instruction      = sys_cfg['task_1']['exit_instruction']
 
     # get audio path for primary idea in part 1
     primary_audio_part_1       = cfg_set['part_1']['primary_audio']
@@ -78,8 +78,8 @@ if  __name__ == '__main__':
         total_trials_part_1        = cfg_set['part_1']['n_trials']
         total_trials_part_2        = cfg_set['part_2']['n_trials']
     else:
-        total_trials_part_1        = sys_cfg['test_trials_part_1']
-        total_trials_part_2        = sys_cfg['test_trials_part_1']
+        total_trials_part_1        = sys_cfg['task_1']['test_trials_part_1']
+        total_trials_part_2        = sys_cfg['task_1']['test_trials_part_2']    
 
 
     # create monitor object
