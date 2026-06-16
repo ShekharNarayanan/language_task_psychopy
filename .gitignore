@@ -2,14 +2,19 @@
 .venv
 __pycache__**
 stimuli/Task_PhonSL.xlsx
+Semantic_task.xlsx
 stimuli/task1/set1/*
 stimuli/task1/set2/*
+stimuli/task2/set1/*
+stimuli/task2/set2/*
 output/*
 
 # keep
 !stimuli/.gitkeep
 !stimuli/task1/set1/.gitkeep
 !stimuli/task1/set2/.gitkeep
+!stimuli/task2/set1/.gitkeep
+!stimuli/task2/set2/.gitkeep
 !output/.gitkeep
 
 
