@@ -107,12 +107,10 @@ if __name__ == '__main__':
             win=win, m=m, colors=all_colors,
             trial_num=i,
             sentence_a=trial['sentence_a'],
-            sentence_b=trial['sentence_b']
+            sentence_a_audio=trial['sentence_a_audio'],
+            sentence_b=trial['sentence_b'],
+            sentence_b_audio=trial['sentence_b_audio']
         )
-        # confidence_rating = run_rating(
-        #     win, text_color=text_color,
-        #     rating_text=rating_instruction
-        # )
 
         participant_results.append({
             'participant_id': participant_id,
@@ -122,7 +120,6 @@ if __name__ == '__main__':
             'sentence_a':     trial['sentence_a'],
             'sentence_b':     trial['sentence_b'],
             'chosen_answer':  chosen_answer,
-            # 'confidence':     confidence_rating,
         })
 
     trial_offset = len(part1_trials)
@@ -139,9 +136,7 @@ if __name__ == '__main__':
             win=win, m=m, colors=all_colors,
             trial_num=trial_num,
             audio_word=trial['audio_word'],
-            audio_sentence_a=trial['sentence_a'],
-            audio_sentence_b=trial['sentence_b'],
-            correct_answer=trial['correct_answer'],
+            correct_answer= trial['correct_answer'],
             incorrect_answer1=trial['incorrect_answer1'],
             incorrect_answer2=trial['incorrect_answer2'],
         )
@@ -150,10 +145,18 @@ if __name__ == '__main__':
             rating_text=rating_instruction
         )
 
+        # if geen betekenis then its the incongruent condition
+        if trial['correct_answer'] == 'geen betekenis':
+            condition_task2 = 'incongruent'
+        else:
+            condition_task2 = 'congruent'
+
         participant_results.append({
             'participant_id': participant_id,
             'part':           2,
             'trial_num':      trial_num,
+            'trial_word':     trial['word'],
+            'condition':      condition_task2,
             'chosen_answer':  chosen_answer,
             'is_correct':     is_correct,
             'confidence':     confidence_rating,

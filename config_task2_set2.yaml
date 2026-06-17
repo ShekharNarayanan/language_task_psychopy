@@ -1,5 +1,5 @@
 part_1:
-  instruction: 'In deze taak lees en hoor je telkens twee zinnen die eindigen op hetzelfde nieuwe woord. Typ na het lezen en luisteren van de zinnen in het tekstvak wat jij denkt dat de betekenis van het nieuwe woord is op basis van de twee zinnen. Als je denkt dat het woord op basis van de zinnen geen congruente betekenis heeft, dan klik'
+  instruction: 'In deze taak lees en hoor je telkens twee zinnen die eindigen op hetzelfde nieuwe woord. Typ na het lezen en luisteren van de zinnen in het tekstvak wat jij denkt dat de betekenis van het nieuwe woord is op basis van de twee zinnen. Als je denkt dat het woord op basis van de zinnen geen congruente betekenis heeft, dan klik je op "geen betekenis". Probeer de nieuwe woorden en hun betekenissen te onthouden, ook wanneer het woord geen betekenis heeft.'
 
   geen_betekenis_label: 'geen betekenis'
 
@@ -8,83 +8,268 @@ part_1:
 
     trial_1:
       sentence_a: 'Peter werd geraakt door de zording'
+      sentence_a_audio: 'stimuli/task2/set2/sentence1a.wav'
       sentence_b: 'Hij sprong omhoog en ving de zording'
+      sentence_b_audio: 'stimuli/task2/set2/sentence1b.wav'
 
     trial_2:
       sentence_a: 'Hij sloeg de spijker in het starang'
+      sentence_a_audio: 'stimuli/task2/set2/sentence2a.wav'
       sentence_b: 'De leraar schreef de datum op het starang'
+      sentence_b_audio: 'stimuli/task2/set2/sentence2b.wav'
 
     trial_3:
       sentence_a: 'Ze sloeg de muis met een tanbe'
+      sentence_a_audio: 'stimuli/task2/set2/sentence3a.wav'
       sentence_b: 'John veegde de vloer met een tanbe'
+      sentence_b_audio: 'stimuli/task2/set2/sentence3b.wav'
 
     trial_4:
       sentence_a: 'De trofee werd vermist uit de zapel'
+      sentence_a_audio: 'stimuli/task2/set2/sentence4a.wav'
       sentence_b: 'De juwelier haalde een horloge uit de zapel'
+      sentence_b_audio: 'stimuli/task2/set2/sentence4b.wav'
 
     trial_5:
       sentence_a: 'De dikke modder kleefde aan haar vavoves'
+      sentence_a_audio: 'stimuli/task2/set2/sentence5a.wav'
       sentence_b: 'Het hete zand brandde onder zijn vavoves'
+      sentence_b_audio: 'stimuli/task2/set2/sentence5b.wav'
 
     trial_6:
       sentence_a: 'Een deel van de as viel op de tuiper'
+      sentence_a_audio: 'stimuli/task2/set2/sentence6a.wav'
       sentence_b: 'Mieren leven meestal onder de tuiper'
+      sentence_b_audio: 'stimuli/task2/set2/sentence6b.wav'
 
     trial_7:
       sentence_a: 'Ouderen verliezen soms hun arkeng'
+      sentence_a_audio: 'stimuli/task2/set2/sentence7a.wav'
       sentence_b: 'Anna had prachtig lang arkeng'
+      sentence_b_audio: 'stimuli/task2/set2/sentence7b.wav'
 
     trial_8:
       sentence_a: 'Don had geen reserve porpion'
+      sentence_a_audio: 'stimuli/task2/set2/sentence8a.wav'
       sentence_b: 'Peter opende het slot met zijn porpion'
+      sentence_b_audio: 'stimuli/task2/set2/sentence8b.wav'
 
     trial_9:
       sentence_a: 'De broek en het overhemd gingen niet lorgor'
+      sentence_a_audio: 'stimuli/task2/set2/sentence9a.wav'
       sentence_b: 'Het leuke stel was al heel lang lorgor'
+      sentence_b_audio: 'stimuli/task2/set2/sentence9b.wav'
 
     trial_10:
       sentence_a: 'Alle gasten krijgen een kudant'
+      sentence_a_audio: 'stimuli/task2/set2/sentence10a.wav'
       sentence_b: 'Abbey poetst haar tanden na elke kudant'
+      sentence_b_audio: 'stimuli/task2/set2/sentence10b.wav'
 
   incongruent:
     n_trials: 10
 
     trial_11:
       sentence_a: 'Hij moest zijn kruiwagen vullen met hoghare'
+      sentence_a_audio: 'stimuli/task2/set2/sentence11a.wav'
       sentence_b: 'De pizza werd bereid in de hete hoghare'
+      sentence_b_audio: 'stimuli/task2/set2/sentence11b.wav'
 
     trial_12:
       sentence_a: 'De meeste studenten werken het liefst in de firaat'
+      sentence_a_audio: 'stimuli/task2/set2/sentence12a.wav'
       sentence_b: 'Een duif is een symbool van firaat'
+      sentence_b_audio: 'stimuli/task2/set2/sentence12b.wav'
 
     trial_13:
       sentence_a: 'Jack deed wat eten in de hodder'
+      sentence_a_audio: 'stimuli/task2/set2/sentence13a.wav'
       sentence_b: 'Hij verstuurde per ongeluk de brief zonder hodder'
+      sentence_b_audio: 'stimuli/task2/set2/sentence13b.wav'
 
     trial_14:
       sentence_a: 'Toen de oorlog eindigde was er portine'
+      sentence_a_audio: 'stimuli/task2/set2/sentence14a.wav'
       sentence_b: 'Het brave kind kreeg nieuwe portine'
+      sentence_b_audio: 'stimuli/task2/set2/sentence14b.wav'
 
     trial_15:
       sentence_a: 'De sigaar brandde een gat in de bolket'
+      sentence_a_audio: 'stimuli/task2/set2/sentence15a.wav'
       sentence_b: 'Om zijn linkerpols droeg hij een bolket'
+      sentence_b_audio: 'stimuli/task2/set2/sentence15b.wav'
 
     trial_16:
       sentence_a: 'In zijn verzameling zat een zeldzame fuwee'
+      sentence_a_audio: 'stimuli/task2/set2/sentence16a.wav'
       sentence_b: 'Tim gooide een steen en brak het fuwee'
+      sentence_b_audio: 'stimuli/task2/set2/sentence16b.wav'
 
     trial_17:
       sentence_a: 'De hond achtervolgde de kat op krong'
+      sentence_a_audio: 'stimuli/task2/set2/sentence17a.wav'
       sentence_b: 'De varkens wentelden zich in de krong'
+      sentence_b_audio: 'stimuli/task2/set2/sentence17b.wav'
 
     trial_18:
       sentence_a: 'Timmy huilde om het verlies van zijn grukjes'
+      sentence_a_audio: 'stimuli/task2/set2/sentence18a.wav'
       sentence_b: 'Katten gaan graag op pad tijdens de grukjes'
+      sentence_b_audio: 'stimuli/task2/set2/sentence18b.wav'
 
     trial_19:
       sentence_a: 'Marie had een batterij nodig voor haar nemel'
+      sentence_a_audio: 'stimuli/task2/set2/sentence19a.wav'
       sentence_b: 'Sally parkeerde haar wagen in een drukke nemel'
+      sentence_b_audio: 'stimuli/task2/set2/sentence19b.wav'
 
     trial_20:
       sentence_a: 'Jenny keek achterom door het marklum'
+      sentence_a_audio: 'stimuli/task2/set2/sentence20a.wav'
       sentence_b: 'Patrick droeg een hemd in het marklum'
+      sentence_b_audio: 'stimuli/task2/set2/sentence20b.wav'
+
+part_2:
+  instruction: 'Nu word je gevraagd naar de betekenissen van de woorden die je zojuist hebt geleerd. Kies de betekenis van het woord, of kies "geen betekenis" als het woord geen congruente betekenis had.'
+
+  n_trials: 20
+
+  trial_1:
+    word: zording
+    audio_word: 'stimuli/task2/set2/zording.wav'
+    correct_answer: bal
+    incorrect_answer1: bezem
+    incorrect_answer2: geen betekenis
+
+  trial_2:
+    word: starang
+    audio_word: 'stimuli/task2/set2/starang.wav'
+    correct_answer: bord
+    incorrect_answer1: grond
+    incorrect_answer2: geen betekenis
+
+  trial_3:
+    word: tanbe
+    audio_word: 'stimuli/task2/set2/tanbe.wav'
+    correct_answer: bezem
+    incorrect_answer1: bord
+    incorrect_answer2: geen betekenis
+
+  trial_4:
+    word: zapel
+    audio_word: 'stimuli/task2/set2/zapel.wav'
+    correct_answer: vitrine
+    incorrect_answer1: maaltijd
+    incorrect_answer2: geen betekenis
+
+  trial_5:
+    word: vavoves
+    audio_word: 'stimuli/task2/set2/vavoves.wav'
+    correct_answer: voeten
+    incorrect_answer1: haar
+    incorrect_answer2: geen betekenis
+
+  trial_6:
+    word: tuiper
+    audio_word: 'stimuli/task2/set2/tuiper.wav'
+    correct_answer: grond
+    incorrect_answer1: vitrine
+    incorrect_answer2: geen betekenis
+
+  trial_7:
+    word: arkeng
+    audio_word: 'stimuli/task2/set2/arkeng.wav'
+    correct_answer: haar
+    incorrect_answer1: samen
+    incorrect_answer2: geen betekenis
+
+  trial_8:
+    word: porpion
+    audio_word: 'stimuli/task2/set2/porpion.wav'
+    correct_answer: sleutel
+    incorrect_answer1: bal
+    incorrect_answer2: geen betekenis
+
+  trial_9:
+    word: lorgor
+    audio_word: 'stimuli/task2/set2/lorgor.wav'
+    correct_answer: samen
+    incorrect_answer1: voeten
+    incorrect_answer2: geen betekenis
+
+  trial_10:
+    word: kudant
+    audio_word: 'stimuli/task2/set2/kudant.wav'
+    correct_answer: maaltijd
+    incorrect_answer1: sleutel
+    incorrect_answer2: geen betekenis
+
+  trial_11:
+    word: hoghare
+    audio_word: 'stimuli/task2/set2/hoghare.wav'
+    correct_answer: geen betekenis
+    incorrect_answer1: bord
+    incorrect_answer2: voeten
+
+  trial_12:
+    word: firaat
+    audio_word: 'stimuli/task2/set2/firaat.wav'
+    correct_answer: geen betekenis
+    incorrect_answer1: bal
+    incorrect_answer2: haar
+
+  trial_13:
+    word: hodder
+    audio_word: 'stimuli/task2/set2/hodder.wav'
+    correct_answer: geen betekenis
+    incorrect_answer1: vitrine
+    incorrect_answer2: grond
+
+  trial_14:
+    word: portine
+    audio_word: 'stimuli/task2/set2/portine.wav'
+    correct_answer: geen betekenis
+    incorrect_answer1: voeten
+    incorrect_answer2: bord
+
+  trial_15:
+    word: bolket
+    audio_word: 'stimuli/task2/set2/bolket.wav'
+    correct_answer: geen betekenis
+    incorrect_answer1: haar
+    incorrect_answer2: sleutel
+
+  trial_16:
+    word: fuwee
+    audio_word: 'stimuli/task2/set2/fuwee.wav'
+    correct_answer: geen betekenis
+    incorrect_answer1: maaltijd
+    incorrect_answer2: bal
+
+  trial_17:
+    word: krong
+    audio_word: 'stimuli/task2/set2/krong.wav'
+    correct_answer: geen betekenis
+    incorrect_answer1: grond
+    incorrect_answer2: samen
+
+  trial_18:
+    word: grukjes
+    audio_word: 'stimuli/task2/set2/grukjes.wav'
+    correct_answer: geen betekenis
+    incorrect_answer1: sleutel
+    incorrect_answer2: vitrine
+
+  trial_19:
+    word: nemel
+    audio_word: 'stimuli/task2/set2/nemel.wav'
+    correct_answer: geen betekenis
+    incorrect_answer1: bezem
+    incorrect_answer2: maaltijd
+
+  trial_20:
+    word: marklum
+    audio_word: 'stimuli/task2/set2/marklum.wav'
+    correct_answer: geen betekenis
+    incorrect_answer1: samen
+    incorrect_answer2: bezem

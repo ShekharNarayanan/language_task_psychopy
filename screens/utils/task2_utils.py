@@ -18,22 +18,25 @@ def extract_trials(cfg_part, condition_key, condition_label):
         condition_label: String label to tag each trial with ('congruent' or 'incongruent').
 
     Returns:
-        Shuffled list of trial dicts, each with 'condition', 'sentence_a', 'sentence_b'.
+        Shuffled list of trial dicts, each with 'condition', 'sentence_a',
+        'sentence_a_audio', 'sentence_b', 'sentence_b_audio'.
     """
     trials = []
     for key, data in cfg_part[condition_key].items():
         if not key.startswith('trial_'):
             continue
         trials.append({
-            'condition':  condition_label,
-            'sentence_a': data['sentence_a'],
-            'sentence_b': data['sentence_b'],
+            'condition':        condition_label,
+            'sentence_a':       data['sentence_a'],
+            'sentence_a_audio': data['sentence_a_audio'],
+            'sentence_b':       data['sentence_b'],
+            'sentence_b_audio': data['sentence_b_audio'],
         })
     random.shuffle(trials)
     return trials
 
 
-def build_constrained_sequence(congruent_pool, incongruent_pool, max_consecutive=2):
+def build_constrained_trial_sequence(pool_a, pool_b, max_consecutive=2):
     """
     Merge two trial pools into a single pseudorandom sequence where no
     condition appears more than max_consecutive times in a row.
@@ -41,17 +44,28 @@ def build_constrained_sequence(congruent_pool, incongruent_pool, max_consecutive
     Each pool is consumed one trial at a time. At each step the algorithm
     picks randomly from whichever conditions are still allowed. If the last
     max_consecutive trials were all from the same condition, the other
-    condition is forced next.
+    condition is forced next, unless that pool is empty, in which case the
+    constraint is relaxed for that step.
+
+    The condition labels are read directly from the trial dicts, so this
+    works for any pair of pools regardless of what their 'condition' values
+    are (e.g. congruent/incongruent, or real_word/geen_betekenis).
 
     Args:
-        congruent_pool:   List of congruent trial dicts (pre-shuffled).
-        incongruent_pool: List of incongruent trial dicts (pre-shuffled).
+        pool_a:           List of trial dicts for the first condition (pre-shuffled).
+        pool_b:           List of trial dicts for the second condition (pre-shuffled).
         max_consecutive:  Maximum allowed consecutive trials from one condition.
 
     Returns:
         Ordered list of trial dicts ready to iterate over in the trial loop.
     """
-    pools  = {'congruent': congruent_pool, 'incongruent': incongruent_pool}
+    if not pool_a and not pool_b:
+        return []
+
+    label_a = pool_a[0]['condition'] if pool_a else pool_b[0]['condition'] + '_other'
+    label_b = pool_b[0]['condition'] if pool_b else pool_a[0]['condition'] + '_other'
+
+    pools  = {label_a: pool_a, label_b: pool_b}
     result = []
 
     while any(pools.values()):
@@ -59,15 +73,20 @@ def build_constrained_sequence(congruent_pool, incongruent_pool, max_consecutive
         # Look at the last N conditions we placed
         last_conditions = [t['condition'] for t in result[-max_consecutive:]]
 
-        # If they are all the same condition, we must switch to the other one
+        # If they are all the same condition, we should switch to the other one
         last_n_same_condition = (
             len(last_conditions) == max_consecutive and
             len(set(last_conditions)) == 1
         )
 
         if last_n_same_condition:
-            forced_condition   = 'congruent' if last_conditions[0] == 'incongruent' else 'incongruent'
-            allowed_conditions = [forced_condition]
+            other_label = label_b if last_conditions[0] == label_a else label_a
+            if pools[other_label]:
+                # The other pool still has trials, so force the switch
+                allowed_conditions = [other_label]
+            else:
+                # The other pool is empty, relax the constraint for this step
+                allowed_conditions = [c for c in pools if pools[c]]
         else:
             # Both conditions are allowed, pick randomly from whatever still has trials
             allowed_conditions = [c for c in pools if pools[c]]
@@ -99,9 +118,8 @@ def extract_part2_trials(cfg_part2):
             continue
         trial = {
             'condition':         'geen_betekenis' if data['correct_answer'] == 'geen betekenis' else 'real_word',
+            'word':              data['word'],
             'audio_word':        data['audio_word'],
-            'sentence_a':        data['sentence_a'],
-            'sentence_b':        data['sentence_b'],
             'correct_answer':    data['correct_answer'],
             'incorrect_answer1': data['incorrect_answer1'],
             'incorrect_answer2': data['incorrect_answer2'],
