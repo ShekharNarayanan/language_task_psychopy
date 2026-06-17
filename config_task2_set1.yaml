@@ -1,5 +1,5 @@
 part_1:
-  instruction: 'In deze taak lees en hoor je telkens twee zinnen die eindigen op hetzelfde nieuwe woord. Typ na het lezen en luisteren van de zinnen in het tekstvak wat jij denkt dat de betekenis van het nieuwe woord is op basis van de twee zinnen. Als je denkt dat het woord op basis van de zinnen geen congruente betekenis heeft, dan klik'
+  instruction: 'In deze taak lees en hoor je telkens twee zinnen die eindigen op hetzelfde nieuwe woord. Typ na het lezen en luisteren van de zinnen in het tekstvak wat jij denkt dat de betekenis van het nieuwe woord is op basis van de twee zinnen. Als je denkt dat het woord op basis van de zinnen geen congruente betekenis heeft, dan klik je op "geen betekenis". Probeer de nieuwe woorden en hun betekenissen te onthouden, ook wanneer het woord geen betekenis heeft.'
 
   geen_betekenis_label: 'geen betekenis'
 
@@ -24,7 +24,7 @@ part_1:
 
     trial_5:
       sentence_a: 'Peter sloot zijn toltes'
-      sentence_b: 'Zonder bril deed de zon pijn aan Kate''s toltes'
+      sentence_b: 'Zonder bril deed de zon pijn aan Kate\'s toltes'
 
     trial_6:
       sentence_a: 'Er zat geen water meer in het roelje'

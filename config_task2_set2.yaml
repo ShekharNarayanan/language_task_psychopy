@@ -1,0 +1,90 @@
+part_1:
+  instruction: 'In deze taak lees en hoor je telkens twee zinnen die eindigen op hetzelfde nieuwe woord. Typ na het lezen en luisteren van de zinnen in het tekstvak wat jij denkt dat de betekenis van het nieuwe woord is op basis van de twee zinnen. Als je denkt dat het woord op basis van de zinnen geen congruente betekenis heeft, dan klik'
+
+  geen_betekenis_label: 'geen betekenis'
+
+  congruent:
+    n_trials: 10
+
+    trial_1:
+      sentence_a: 'Peter werd geraakt door de zording'
+      sentence_b: 'Hij sprong omhoog en ving de zording'
+
+    trial_2:
+      sentence_a: 'Hij sloeg de spijker in het starang'
+      sentence_b: 'De leraar schreef de datum op het starang'
+
+    trial_3:
+      sentence_a: 'Ze sloeg de muis met een tanbe'
+      sentence_b: 'John veegde de vloer met een tanbe'
+
+    trial_4:
+      sentence_a: 'De trofee werd vermist uit de zapel'
+      sentence_b: 'De juwelier haalde een horloge uit de zapel'
+
+    trial_5:
+      sentence_a: 'De dikke modder kleefde aan haar vavoves'
+      sentence_b: 'Het hete zand brandde onder zijn vavoves'
+
+    trial_6:
+      sentence_a: 'Een deel van de as viel op de tuiper'
+      sentence_b: 'Mieren leven meestal onder de tuiper'
+
+    trial_7:
+      sentence_a: 'Ouderen verliezen soms hun arkeng'
+      sentence_b: 'Anna had prachtig lang arkeng'
+
+    trial_8:
+      sentence_a: 'Don had geen reserve porpion'
+      sentence_b: 'Peter opende het slot met zijn porpion'
+
+    trial_9:
+      sentence_a: 'De broek en het overhemd gingen niet lorgor'
+      sentence_b: 'Het leuke stel was al heel lang lorgor'
+
+    trial_10:
+      sentence_a: 'Alle gasten krijgen een kudant'
+      sentence_b: 'Abbey poetst haar tanden na elke kudant'
+
+  incongruent:
+    n_trials: 10
+
+    trial_11:
+      sentence_a: 'Hij moest zijn kruiwagen vullen met hoghare'
+      sentence_b: 'De pizza werd bereid in de hete hoghare'
+
+    trial_12:
+      sentence_a: 'De meeste studenten werken het liefst in de firaat'
+      sentence_b: 'Een duif is een symbool van firaat'
+
+    trial_13:
+      sentence_a: 'Jack deed wat eten in de hodder'
+      sentence_b: 'Hij verstuurde per ongeluk de brief zonder hodder'
+
+    trial_14:
+      sentence_a: 'Toen de oorlog eindigde was er portine'
+      sentence_b: 'Het brave kind kreeg nieuwe portine'
+
+    trial_15:
+      sentence_a: 'De sigaar brandde een gat in de bolket'
+      sentence_b: 'Om zijn linkerpols droeg hij een bolket'
+
+    trial_16:
+      sentence_a: 'In zijn verzameling zat een zeldzame fuwee'
+      sentence_b: 'Tim gooide een steen en brak het fuwee'
+
+    trial_17:
+      sentence_a: 'De hond achtervolgde de kat op krong'
+      sentence_b: 'De varkens wentelden zich in de krong'
+
+    trial_18:
+      sentence_a: 'Timmy huilde om het verlies van zijn grukjes'
+      sentence_b: 'Katten gaan graag op pad tijdens de grukjes'
+
+    trial_19:
+      sentence_a: 'Marie had een batterij nodig voor haar nemel'
+      sentence_b: 'Sally parkeerde haar wagen in een drukke nemel'
+
+    trial_20:
+      sentence_a: 'Jenny keek achterom door het marklum'
+      sentence_b: 'Patrick droeg een hemd in het marklum'
