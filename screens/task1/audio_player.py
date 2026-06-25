@@ -166,6 +166,7 @@ def run_audio_player(win, m, colors, audio_path):
                 is_playing         = False
                 elapsed            = dur
                 s['play_lbl'].text = "▶  Play"
+                audio_played       = True # make sure audio is marked as complete
 
         # ── 2. Update seek bar visuals ────────────────────────────────────────
         progress = elapsed / dur if dur > 0 else 0
@@ -189,18 +190,18 @@ def run_audio_player(win, m, colors, audio_path):
         if m.getLeftButtonPressed():
             mx, my = m.getPos()
 
-            if _on_seekbar(mx, my):
+            #if _on_seekbar(mx, my): # Making the toggle impossible
                 # Scrub to clicked position; keep playing if already playing
-                elapsed    = _ratio(mx) * dur
-                play_start = elapsed
-                audio.stop()
-                audio.seek(elapsed)
-                if is_playing:
-                    audio.play()
-                    clock.reset()
-                audio_played = True
+             #   elapsed    = _ratio(mx) * dur
+              #  play_start = elapsed
+               # audio.stop()
+                #audio.seek(elapsed)
+                #if is_playing:
+                 #   audio.play()
+                  #  clock.reset()
+                #audio_played = True # otherwise marked as played when it's not finished
 
-            elif _hit(mx, my, *_PLAY_POS, _PLAY_W, _PLAY_H):
+            if _hit(mx, my, *_PLAY_POS, _PLAY_W, _PLAY_H):
                 # Toggle play / pause
                 if is_playing:
                     audio.stop()
@@ -213,7 +214,7 @@ def run_audio_player(win, m, colors, audio_path):
                     play_start         = elapsed  # remember where we resumed from
                     clock.reset()                 # clock now measures time since resume
                     is_playing         = True
-                    audio_played       = True
+                    #audio_played       = True #otherwise it says it's finished when not
                     s['play_lbl'].text = "⏸  Pause"
                 core.wait(_CLICK_DEBOUNCE)  # prevent double-firing on a single click
 
