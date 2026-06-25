@@ -35,7 +35,7 @@ if  __name__ == '__main__':
     # get pid and set_num
     participant_id = args.p_id
     set_num        = args.set_num
-    test_run_flag  = args.test_run
+    test_run_flag  = args.test_run.lower() == 'true'
 
     # load config file for chosen set
     cfg_set_path = root / f'config_task1_set{set_num}.yaml'
