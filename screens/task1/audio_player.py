@@ -64,7 +64,7 @@ def _build_stims(win, col, total_dur):
     """
     return {
         'title': visual.TextStim(
-            win, text="Listen to the audio",
+            win, text="Luister aandachtig",
             pos=(0, 3), height=1.1, bold=True,
             color=col['text']
         ),
@@ -104,7 +104,7 @@ def _build_stims(win, col, total_dur):
             fillColor=col['accent'], lineColor=None
         ),
         'play_lbl': visual.TextStim(
-            win, text="▶  Play",
+            win, text="▶  Afspelen",
             pos=_PLAY_POS, height=0.85, bold=True,
             color='white'
         ),
@@ -115,7 +115,7 @@ def _build_stims(win, col, total_dur):
             fillColor=col['muted'], lineColor=None
         ),
         'cont_lbl': visual.TextStim(
-            win, text="Continue ->",
+            win, text="Doorgaan ->",
             pos=_CONT_POS, height=0.85, bold=True,
             color='white'
         ),
@@ -165,7 +165,7 @@ def run_audio_player(win, m, colors, audio_path):
                 audio.stop()
                 is_playing         = False
                 elapsed            = dur
-                s['play_lbl'].text = "▶  Play"
+                s['play_lbl'].text = "▶  Afspelen"
                 audio_played       = True # make sure audio is marked as complete
 
         # ── 2. Update seek bar visuals ────────────────────────────────────────
@@ -206,7 +206,7 @@ def run_audio_player(win, m, colors, audio_path):
                 if is_playing:
                     audio.stop()
                     is_playing         = False
-                    s['play_lbl'].text = "▶  Play"
+                    s['play_lbl'].text = "▶  Afspelen"
                 else:
                     audio.stop()
                     audio.seek(elapsed)
@@ -215,7 +215,7 @@ def run_audio_player(win, m, colors, audio_path):
                     clock.reset()                 # clock now measures time since resume
                     is_playing         = True
                     #audio_played       = True #otherwise it says it's finished when not
-                    s['play_lbl'].text = "⏸  Pause"
+                    s['play_lbl'].text = "⏸  Pauzeren"
                 core.wait(_CLICK_DEBOUNCE)  # prevent double-firing on a single click
 
             elif audio_played and _hit(mx, my, *_CONT_POS, _CONT_W, _CONT_H):

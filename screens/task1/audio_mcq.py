@@ -75,7 +75,7 @@ def _make_player(win, col, label, y, audio_path):
             fillColor=col['accent'], lineColor=None
         ),
         'play_lbl': visual.TextStim(
-            win, text="Play",
+            win, text="Afspelen",
             pos=(_PLAY_X, y), height=0.7, bold=True,
             color='white'
         ),
@@ -116,7 +116,7 @@ def _make_primary_player(win, col, audio_path):
     audio = sound.Sound(audio_path)
     return {
         'lbl': visual.TextStim(
-            win, text="Reference",
+            win, text="Referentie",
             pos=(_PRIMARY_LABEL_X, _PRIMARY_Y), height=1.0, bold=True,
             color=col['text']
         ),
@@ -126,7 +126,7 @@ def _make_primary_player(win, col, audio_path):
             fillColor=col['accent'], lineColor=None
         ),
         'play_lbl': visual.TextStim(
-            win, text="Play",
+            win, text="Afspelen",
             pos=_PRIMARY_POS, height=0.7, bold=True,
             color='white'
         ),
@@ -157,7 +157,7 @@ def _build_screen_stims(win, col, trial_num, show_divider=False):
             color=col['text']
         ),
         'instruction': visual.TextStim(
-            win, text="Choose the correct audio file",
+            win, text="Kies één optie. Speel ze eerst allemaal af.",
             pos=(0, 9.0), height=0.7,
             color=col['muted']
         ),
@@ -167,14 +167,14 @@ def _build_screen_stims(win, col, trial_num, show_divider=False):
             fillColor=col['muted'], lineColor=None
         ),
         'confirm_lbl': visual.TextStim(
-            win, text="Confirm",
+            win, text="Bevestigen",
             pos=_CONFIRM_POS, height=0.8, bold=True,
             color='white'
         ),
     }
     if show_divider:
         stims['divider'] = visual.TextStim(
-            win, text="--- Options ---",
+            win, text="--- Opties ---",
             pos=(0, _OPTION_START_Y + 1.5), height=0.7,
             color=col['muted']
         )
@@ -188,7 +188,7 @@ def _stop_all(players):
         if p['is_playing']:
             p['audio'].stop()
             p['is_playing']    = False
-            p['play_lbl'].text = "Play"
+            p['play_lbl'].text = "Afspelen"
 
 
 # ---- Part 1 ----------------------------------------------------------------------------------------------------------------------------------------
@@ -246,7 +246,7 @@ def run_audio_mcq_part1(win, m, colors, audio_paths, trial_num, correct_index=0)
             if p['is_playing'] and p['clock'].getTime() >= p['dur']:
                 p['audio'].stop()
                 p['is_playing']    = False
-                p['play_lbl'].text = "Play"
+                p['play_lbl'].text = "Afspelen"
 
         # ---- 2. Update confirm button ------------------------------------------------------------------------------------
         all_played  = all(p['played'] for p in players)
@@ -277,7 +277,7 @@ def run_audio_mcq_part1(win, m, colors, audio_paths, trial_num, correct_index=0)
                     if p['is_playing']:
                         p['audio'].stop()
                         p['is_playing']    = False
-                        p['play_lbl'].text = "Play"
+                        p['play_lbl'].text = "Afspelen"
                     else:
                         _stop_all(players)
                         p['audio'].seek(0)
@@ -285,7 +285,7 @@ def run_audio_mcq_part1(win, m, colors, audio_paths, trial_num, correct_index=0)
                         p['clock'].reset()
                         p['is_playing']    = True
                         p['played']        = True
-                        p['play_lbl'].text = "Pause"
+                        p['play_lbl'].text = "Pauzeren"
                     core.wait(_CLICK_DEBOUNCE)
                     break
 
@@ -362,7 +362,7 @@ def run_audio_mcq_part2(win, m, colors, primary_audio, audio_paths, trial_num, c
         if primary['is_playing'] and primary['clock'].getTime() >= primary['dur']:
             primary['audio'].stop()
             primary['is_playing']    = False
-            primary['play_lbl'].text = "Play"
+            primary['play_lbl'].text = "Afspelen"
 
         # ---- 2. Update MCQ playback states --------------------------------------------------------------------------
         options_unlocked = primary['played']
@@ -370,7 +370,7 @@ def run_audio_mcq_part2(win, m, colors, primary_audio, audio_paths, trial_num, c
             if p['is_playing'] and p['clock'].getTime() >= p['dur']:
                 p['audio'].stop()
                 p['is_playing']    = False
-                p['play_lbl'].text = "Play"
+                p['play_lbl'].text = "Afspelen"
 
         # ---- 3. Update button states --------------------------------------------------------------------------------------
         all_played  = options_unlocked and all(p['played'] for p in players)
@@ -409,7 +409,7 @@ def run_audio_mcq_part2(win, m, colors, primary_audio, audio_paths, trial_num, c
                 if primary['is_playing']:
                     primary['audio'].stop()
                     primary['is_playing']    = False
-                    primary['play_lbl'].text = "Play"
+                    primary['play_lbl'].text = "Afspelen"
                 else:
                     _stop_all(players)
                     primary['audio'].stop()
@@ -418,7 +418,7 @@ def run_audio_mcq_part2(win, m, colors, primary_audio, audio_paths, trial_num, c
                     primary['clock'].reset()
                     primary['is_playing']    = True
                     primary['played']        = True
-                    primary['play_lbl'].text = "Pause"
+                    primary['play_lbl'].text = "Pauzeren"
                 core.wait(_CLICK_DEBOUNCE)
 
             # MCQ options — only clickable after primary has been played
@@ -428,20 +428,20 @@ def run_audio_mcq_part2(win, m, colors, primary_audio, audio_paths, trial_num, c
                         if p['is_playing']:
                             p['audio'].stop()
                             p['is_playing']    = False
-                            p['play_lbl'].text = "Play"
+                            p['play_lbl'].text = "Afspelen"
                         else:
                             _stop_all(players)
                             # Also stop primary if it somehow started again
                             if primary['is_playing']:
                                 primary['audio'].stop()
                                 primary['is_playing']    = False
-                                primary['play_lbl'].text = "Play"
+                                primary['play_lbl'].text = "Afspelen"
                             p['audio'].seek(0)
                             p['audio'].play()
                             p['clock'].reset()
                             p['is_playing']    = True
                             p['played']        = True
-                            p['play_lbl'].text = "Pause"
+                            p['play_lbl'].text = "Pauzeren"
                         core.wait(_CLICK_DEBOUNCE)
                         break
 
