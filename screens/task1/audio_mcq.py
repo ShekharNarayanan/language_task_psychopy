@@ -231,6 +231,9 @@ def run_audio_mcq_part1(win, m, colors, audio_paths, trial_num, correct_index=0)
     correct_position = list(original_indices).index(correct_index)
 
     screen  = _build_screen_stims(win, col, trial_num)
+    confirm_y = (_OPTION_START_Y - (len(audio_paths) - 1) * _OPTION_SPACING) - 3.0  # added
+    screen['confirm_bg'].pos  = (10.0, confirm_y)  # added
+    screen['confirm_lbl'].pos = (10.0, confirm_y) # added                                    
     players = [
         _make_player(win, col, _LABELS[i], _OPTION_START_Y - i * _OPTION_SPACING, path)
         for i, path in enumerate(shuffled_paths)
@@ -294,7 +297,7 @@ def run_audio_mcq_part1(win, m, colors, audio_paths, trial_num, correct_index=0)
                     core.wait(_CLICK_DEBOUNCE)
                     break
 
-            if can_confirm and _hit(mx, my, *_CONFIRM_POS, _CONFIRM_W, _CONFIRM_H):
+            if can_confirm and _hit(mx, my, 10.0, confirm_y, _CONFIRM_W, _CONFIRM_H):
                 _stop_all(players)
                 selected   = next(i for i, p in enumerate(players) if p['checked'])
                 is_correct = selected == correct_position
@@ -344,6 +347,10 @@ def run_audio_mcq_part2(win, m, colors, primary_audio, audio_paths, trial_num, c
 
     primary = _make_primary_player(win, col, primary_audio)
     screen  = _build_screen_stims(win, col, trial_num, show_divider=True)
+    confirm_y = (_OPTION_START_Y - (len(audio_paths) - 1) * _OPTION_SPACING) - 3.0  # added
+    screen['confirm_bg'].pos  = (10.0, confirm_y) # added
+    screen['confirm_lbl'].pos = (10.0, confirm_y) # added
+
     players = [
         _make_player(win, col, _LABELS[i], _OPTION_START_Y - i * _OPTION_SPACING, path)
         for i, path in enumerate(shuffled_paths)
@@ -446,7 +453,7 @@ def run_audio_mcq_part2(win, m, colors, primary_audio, audio_paths, trial_num, c
                         core.wait(_CLICK_DEBOUNCE)
                         break
 
-                if can_confirm and _hit(mx, my, *_CONFIRM_POS, _CONFIRM_W, _CONFIRM_H):
+                if can_confirm and _hit(mx, my, 10.0, confirm_y, _CONFIRM_W, _CONFIRM_H):
                     _stop_all(players)
                     primary['audio'].stop()
                     selected   = next(i for i, p in enumerate(players) if p['checked'])
