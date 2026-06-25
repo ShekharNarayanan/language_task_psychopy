@@ -1,9 +1,9 @@
 monitor:
   name: 'my_lab_monitor'
-  width_cm: 53.1
+  width_cm: 55.9
   distance_cm: 60.0
-  width_px: 1920
-  height_px: 1080
+  width_px: 1680
+  height_px: 1050
 
 window:
   size: [1080, 720]
