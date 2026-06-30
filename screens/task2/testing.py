@@ -41,7 +41,7 @@ def _make_audio_btn(win, col, label, pos):
         fillColor=col['accent'], lineColor=None
     )
     play_lbl = visual.TextStim(
-        win, text="Play",
+        win, text="Afspelen",
         pos=pos, height=0.7, bold=True,
         color='white'
     )
@@ -141,7 +141,7 @@ def run_task2_part2(win, m, colors, trial_num,
         snd_word.stop()
         is_playing             = False
         word_btn['is_playing'] = False
-        word_btn['play_lbl'].text = "Play"
+        word_btn['play_lbl'].text = "Afspelen"
 
     while True:
 
@@ -187,7 +187,7 @@ def run_task2_part2(win, m, colors, trial_num,
                     clk_word.reset()
                     is_playing                = True
                     word_btn['is_playing']    = True
-                    word_btn['play_lbl'].text = "Pause"
+                    word_btn['play_lbl'].text = "Pauzeren"
                     word_played               = True
                 core.wait(_CLICK_DEBOUNCE)
 

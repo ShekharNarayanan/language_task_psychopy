@@ -43,7 +43,7 @@ def _make_play_button(win, col, pos):
             fillColor=col['accent'], lineColor=None
         ),
         'lbl': visual.TextStim(
-            win, text="Play",
+            win, text="Afspelen",
             pos=pos, height=0.7, bold=True,
             color='white'
         ),
@@ -89,21 +89,31 @@ def run_task2_part1(win, m, colors, trial_num,
     dur_b = snd_b.getDuration()
 
     playing = None   # 'a', 'b', or None -- only one plays at a time
+    played_a = False
+    played_b = False
+    
 
     title = visual.TextStim(
         win, text=f"Trial {trial_num}",
         pos=(0, _TITLE_Y), height=1.1, bold=True,
         color=col['text']
-    )
+    )    
+    
+    instruction = visual.TextStim( # added instruction to clarify both need to be played
+        win, text = "Speel beide zinnen af voordat je antwoord geeft",
+        pos = (0, _TITLE_Y - 1.5), height=0.7,
+        color=col['muted']
+    ) 
+    
     stim_a = visual.TextStim(
         win, text=sentence_a,
-        pos=(0, _SENTENCE_A_Y), height=0.9,
-        color=col['text'], wrapWidth=25
+        pos=(-2.0, _SENTENCE_A_Y), height=0.9, 
+        color=col['text'], wrapWidth=20 # shifted left (-2.0) and reduced from 25 to prevent overlap with play button
     )
     stim_b = visual.TextStim(
         win, text=sentence_b,
-        pos=(0, _SENTENCE_B_Y), height=0.9,
-        color=col['text'], wrapWidth=25
+        pos=(-2.0, _SENTENCE_B_Y), height=0.9,
+        color=col['text'], wrapWidth=20 # shifted left (-2.0) and reduced from 25 to prevent overlap with play button
     )
 
     play_a_btn = _make_play_button(win, col, _PLAY_A_POS)
@@ -121,7 +131,7 @@ def run_task2_part1(win, m, colors, trial_num,
         color=col['text']
     )
     input_hint = visual.TextStim(
-        win, text='Type your answer and press Enter...',
+        win, text='Typ hier je antwoord en druk op Enter...',
         pos=(0, _INPUT_Y), height=0.7,
         color=col['muted']
     )
@@ -140,13 +150,13 @@ def run_task2_part1(win, m, colors, trial_num,
 
     def stop_all():
         """Stop whichever sentence audio is currently playing."""
-        nonlocal playing
+        nonlocal playing, played_a, played_b
         snd_a.stop()
         snd_b.stop()
         play_a_btn['is_playing'] = False
         play_b_btn['is_playing'] = False
-        play_a_btn['lbl'].text   = "Play"
-        play_b_btn['lbl'].text   = "Play"
+        play_a_btn['lbl'].text   = "Afspelen"
+        play_b_btn['lbl'].text   = "Afspelen"
         playing = None
 
     while True:
@@ -154,11 +164,14 @@ def run_task2_part1(win, m, colors, trial_num,
         # ── Detect natural end of playback ──────────────────────────────────
         if playing == 'a' and clk_a.getTime() >= dur_a:
             stop_all()
+            played_a = True
         elif playing == 'b' and clk_b.getTime() >= dur_b:
             stop_all()
+            played_b = True
 
         # ── Draw ──────────────────────────────────────────────────────────────
         title.draw()
+        instruction.draw()
         stim_a.draw()
         play_a_btn['bg'].draw()
         play_a_btn['lbl'].draw()
@@ -182,20 +195,21 @@ def run_task2_part1(win, m, colors, trial_num,
         keys = event.getKeys()
 
         for k in keys:
-            if k == 'return' and typed_text:
-                stop_all()
-                return typed_text.strip()
-
-            elif k == 'backspace':
-                typed_text = typed_text[:-1]
-
-            elif k == 'escape' or k == 'q':
+            if k == 'escape' or k == 'q':
                 stop_all()
                 win.close()
                 core.quit()
+                
+            elif played_a and played_b: # both audios need to have been played
+                if k == 'return' and typed_text:
+                    stop_all()
+                    return typed_text.strip()
 
-            elif len(k) == 1:  # single printable character
-                typed_text += k
+                elif k == 'backspace':
+                    typed_text = typed_text[:-1]
+
+                elif len(k) == 1:  # single printable character
+                    typed_text += k
 
         # ── Mouse input ───────────────────────────────────────────────────────
         if m.getLeftButtonPressed():
@@ -208,7 +222,7 @@ def run_task2_part1(win, m, colors, trial_num,
                 clk_a.reset()
                 playing                  = 'a'
                 play_a_btn['is_playing'] = True
-                play_a_btn['lbl'].text   = "Pause"
+                play_a_btn['lbl'].text   = "Pauzeren"
                 core.wait(_CLICK_DEBOUNCE)
 
             elif _hit(mx, my, *_PLAY_B_POS, _PLAY_W, _PLAY_H):
@@ -218,10 +232,10 @@ def run_task2_part1(win, m, colors, trial_num,
                 clk_b.reset()
                 playing                  = 'b'
                 play_b_btn['is_playing'] = True
-                play_b_btn['lbl'].text   = "Pause"
+                play_b_btn['lbl'].text   = "Pauzeren"
                 core.wait(_CLICK_DEBOUNCE)
 
-            elif _hit(mx, my, *_GEEN_POS, _GEEN_W, _GEEN_H):
+            elif played_a and played_b and _hit(mx, my, *_GEEN_POS, _GEEN_W, _GEEN_H):
                 stop_all()
                 core.wait(_CLICK_DEBOUNCE)
                 return _GEEN_LABEL

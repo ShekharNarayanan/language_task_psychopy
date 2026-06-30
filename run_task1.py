@@ -160,9 +160,9 @@ if  __name__ == '__main__':
     show_instruction(win=win, text=exit_instruction, text_color=text_color)
     # win.close()
     if test_run_flag:
-        output_path = root / 'output' / f'participant_{participant_id}_set_{set_num}_test.csv'
+        output_path = root / 'output' / f'participant_{participant_id}_task1_set_{set_num}_test.csv'
         participant_df.to_csv(output_path)
     else:
-        output_path = root / 'output' / f'participant_{participant_id}_set_{set_num}.csv'
+        output_path = root / 'output' / f'participant_{participant_id}_task1_set_{set_num}.csv'
         participant_df.to_csv(output_path)
     core.quit()

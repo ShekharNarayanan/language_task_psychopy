@@ -32,4 +32,4 @@ task_2:
   test_trials_part_2: 1
 
 # rating instruction
-rating_instruction: "Hoe zeker ben je van je keuze? 1:Ik gokte 4 :herinner het me. \n Druk op 1-4 om te kiezen, Enter om te bevestigen"
+rating_instruction: "Hoe zeker ben je van je keuze? 1: Ik gokte 4: Ik herinner het me. \n Druk op 1-4 om te kiezen, Enter om te bevestigen"

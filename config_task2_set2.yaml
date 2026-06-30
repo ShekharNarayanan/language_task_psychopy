@@ -1,5 +1,5 @@
 part_1:
-  instruction: 'In deze taak lees en hoor je telkens twee zinnen die eindigen op hetzelfde nieuwe woord. Typ na het lezen en luisteren van de zinnen in het tekstvak wat jij denkt dat de betekenis van het nieuwe woord is op basis van de twee zinnen. Als je denkt dat het woord op basis van de zinnen geen congruente betekenis heeft, dan klik je op "geen betekenis". Probeer de nieuwe woorden en hun betekenissen te onthouden, ook wanneer het woord geen betekenis heeft. Druk op de spatiebalk om te beginnen..'
+  instruction: 'In deze taak lees en hoor je telkens twee zinnen die eindigen op hetzelfde nieuwe woord. Typ na het lezen en luisteren van de zinnen in het tekstvak wat jij denkt dat de betekenis van het nieuwe woord is op basis van de twee zinnen. Als je denkt dat het woord op basis van de zinnen geen congruente betekenis heeft, dan klik je op "geen betekenis". Probeer de nieuwe woorden en hun betekenissen te onthouden, ook wanneer het woord volgens jou geen betekenis had. Druk op de spatiebalk om te beginnen.'
 
   geen_betekenis_label: 'geen betekenis'
 
@@ -94,7 +94,7 @@ part_1:
       sentence_b_audio: 'stimuli/task2/set2/sentence14b.wav'
 
     trial_15:
-      sentence_a: 'De sigaar brandde een gat in de bolket'
+      sentence_a: 'De sigaar brandde een gat in het bolket'
       sentence_a_audio: 'stimuli/task2/set2/sentence15a.wav'
       sentence_b: 'Om zijn linkerpols droeg hij een bolket'
       sentence_b_audio: 'stimuli/task2/set2/sentence15b.wav'
@@ -126,11 +126,11 @@ part_1:
     trial_20:
       sentence_a: 'Jenny keek achterom door het marklum'
       sentence_a_audio: 'stimuli/task2/set2/sentence20a.wav'
-      sentence_b: 'Patrick droeg een hemd in het marklum'
+      sentence_b: 'Patrick droeg een hemd in zijn marklum'
       sentence_b_audio: 'stimuli/task2/set2/sentence20b.wav'
 
 part_2:
-  instruction: 'Nu word je gevraagd naar de betekenissen van de woorden die je zojuist hebt geleerd. Kies de betekenis van het woord, of kies "geen betekenis" als het woord geen congruente betekenis had. Druk op de spatiebalk om te beginnen..'
+  instruction: 'Nu word je gevraagd naar de betekenissen van de woorden die je zojuist hebt geleerd. Kies de betekenis van het woord, of kies "geen betekenis" als het woord geen congruente betekenis had. Druk op de spatiebalk om te beginnen.'
 
   n_trials: 20
 

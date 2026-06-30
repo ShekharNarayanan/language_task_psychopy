@@ -1,6 +1,6 @@
 
 welcome_text: 'In dit deel van het experiment ga je luisteren naar een nieuwe taal. Probeer aandachtig naar de taal te luisteren. Later zal je gevraagd worden naar wat je nog van de taal weet. Druk op de spatiebalk om te beginnen.'
-test_text   : 'Je wordt nu gevraagd naar jouw indruk van de taal die je net hebt gehoord. Je krijgt steeds meerdere woorden te zien op het scherm. Als je op het icoon  klikt bij een woord kan je het beluisteren. Je kan de woorden zo vaak beluisteren als je wilt. Kies telkens het woord dat jou het meest bekend voorkomt op basis van de taal die je zojuist hebt gehoord. Probeer af te gaan op je intuitie. Druk op de spatiebalk om te beginnen..'
+test_text   : 'Je wordt nu gevraagd naar jouw indruk van de taal die je net hebt gehoord. Je krijgt steeds meerdere woorden te zien op het scherm. Als je op het icoon klikt bij een woord kan je het beluisteren. Je kan ze zo vaak beluisteren als je wilt. Kies telkens het woord dat jou het meest bekend voorkomt op basis van de taal die je zojuist hebt gehoord. Probeer af te gaan op je gevoel. Druk op de spatiebalk om te beginnen.'
 
 part_1:  
   n_trials: 34
