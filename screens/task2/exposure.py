@@ -195,7 +195,7 @@ def run_task2_part1(win, m, colors, trial_num,
         keys = event.getKeys()
 
         for k in keys:
-            if k == 'escape' or k == 'q':
+            if k == 'escape':
                 stop_all()
                 win.close()
                 core.quit()
