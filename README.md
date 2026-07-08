@@ -6,6 +6,12 @@ The repository contains python code for developing a language task based behavio
 
 ---
 
+## Terms of use
+
+The code in this repository is licensed under the permissive MIT License. The stimuli are licensed under CC BY 4.0.
+
+If you use this work, please cite it as described in `CITATION.cff`.
+
 ## For returning users
 
 1. Navigate to the project folder using the windows command line. You can open the windows cmd window by searching `cmd` in the windows search bar.
