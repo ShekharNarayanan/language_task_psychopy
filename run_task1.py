@@ -15,6 +15,13 @@ with open(sys_cfg_path) as f:
 from psychopy import prefs
 prefs.hardware['audioLib'] = sys_cfg['audio']['backends']
 
+#from psychopy.tools.systemtools import getAudioDevices
+#from pprint import pprint
+#devices = getAudioDevices()
+#pprint(devices)
+
+prefs.hardware['audioDevice'] = 'Headphones (Realtek(R) Audio' # change this to your audio device
+
 from psychopy import monitors, visual, core, gui
 from psychopy.hardware import mouse
 
