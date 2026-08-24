@@ -1,0 +1,14 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+type: software
+authors:
+- family-names: "Narayanan"
+  given-names: "Shekhar"
+  affiliation: "Tilburg University"
+  orcid: "https://orcid.org/0000-0001-7609-2042"
+- family-names: "van der Wulp"
+  given-names: "Iris"
+  orcid: "https://orcid.org/0000-0002-0195-7707"
+title: "Language Task Psychopy"
+version: "0.1.0"
+url: "https://github.com/ShekharNarayanan/language_task_psychopy"
