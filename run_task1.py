@@ -1,5 +1,6 @@
 import yaml
 import argparse
+from datetime import datetime
 from pathlib import Path
 from screens.utils.results import TrialResults
 
@@ -108,7 +109,8 @@ if  __name__ == '__main__':
     m = mouse.Mouse(win=win)
 
     suffix = '_test' if test_run_flag else ''
-    output_path = root / 'output' / f'participant_{participant_id}_task1_set_{set_num}{suffix}.csv'
+    run_timestamp = datetime.now().strftime('%Y%m%d_%H%M%S_%f')
+    output_path = root / 'output' / f'participant_{participant_id}_task1_set_{set_num}{suffix}_{run_timestamp}.csv'
     participant_results = TrialResults(output_path)
 
     # ------------------------------------------------------------ part 1 ---------------------------------------------------------------------------------------------

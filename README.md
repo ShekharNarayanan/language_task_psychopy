@@ -148,7 +148,7 @@ Press 1 to 4 to highlight a box, Enter to confirm.
 
 #### 1.2.5 Results output
 
-Results are saved as `participant_<p_id>_task1_set_<set_num>.csv` in the `output` folder, with `_test` added before `.csv` for test runs. Each submitted answer is saved immediately, then its row is updated when the confidence rating is confirmed. If the experiment ends during a rating, that answer remains saved with a blank confidence value. One row per trial, with the existing zero-based CSV index:
+Results are saved as `participant_<p_id>_task1_set_<set_num>_<timestamp>.csv` in the `output` folder, with `_test` added before the timestamp for test runs. The local timestamp uses `YYYYMMDD_HHMMSS_microseconds` and is generated once per run, so restarting the experiment saves to a new file. Each submitted answer is saved immediately, then its row is updated when the confidence rating is confirmed. If the experiment ends during a rating, that answer remains saved with a blank confidence value. One row per trial, with the existing zero-based CSV index:
 
 | Column | Description |
 |---|---|
@@ -205,7 +205,7 @@ Same 1 to 4 scale as Task 1, shown after every Part 2 trial.
 
 #### 2.2.5 Results output
 
-Results are saved as `participant_<p_id>_task2_set<set_num>.csv` in the `output` folder, with `_test` added before `.csv` for test runs. Each submitted answer is saved immediately. In Part 2, its row is updated when the confidence rating is confirmed; an answer submitted before quitting during a rating remains saved with a blank confidence value. One row per trial:
+Results are saved as `participant_<p_id>_task2_set<set_num>_<timestamp>.csv` in the `output` folder, with `_test` added before the timestamp for test runs. The local timestamp uses `YYYYMMDD_HHMMSS_microseconds` and is generated once per run, so restarting the experiment saves to a new file. Each submitted answer is saved immediately. In Part 2, its row is updated when the confidence rating is confirmed; an answer submitted before quitting during a rating remains saved with a blank confidence value. One row per trial:
 
 | Column | Description |
 |---|---|
