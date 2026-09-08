@@ -116,7 +116,7 @@ Part 2 instruction screen
     |
 Part 2 trials x 8   (syllable completion MCQ + confidence rating after each)
     |
-End, results saved
+End (results saved throughout)
 ```
 
 #### 1.2.2 Part 1, word recognition
@@ -148,17 +148,17 @@ Press 1 to 4 to highlight a box, Enter to confirm.
 
 #### 1.2.5 Results output
 
-Results are saved as `participant_<p_id>_task1_set<set_num>.csv` in the `output` folder. One row per trial:
+Results are saved as `participant_<p_id>_task1_set_<set_num>.csv` in the `output` folder, with `_test` added before `.csv` for test runs. Each submitted answer is saved immediately, then its row is updated when the confidence rating is confirmed. If the experiment ends during a rating, that answer remains saved with a blank confidence value. One row per trial, with the existing zero-based CSV index:
 
 | Column | Description |
 |---|---|
 | `participant_id` | Value passed via `--p_id` |
 | `part` | 1 or 2 |
-| `trial_num` | Trial number within the part |
+| `trial_num` | Trial number across both parts |
 | `correct_option` | Position of correct answer after shuffling |
 | `selected_option` | Position chosen by participant |
 | `is_correct` | True or False |
-| `rating` | Confidence rating (1 to 4) |
+| `confidence` | Confidence rating (1 to 4) |
 
 ---
 
@@ -185,7 +185,7 @@ Part 2 instruction screen
     |
 Part 2 trials x 20  (play the word, then choose its meaning + confidence rating after each)
     |
-End, results saved
+End (results saved throughout)
 ```
 
 #### 2.2.2 Part 1, sentence exposure
@@ -205,13 +205,13 @@ Same 1 to 4 scale as Task 1, shown after every Part 2 trial.
 
 #### 2.2.5 Results output
 
-Results are saved as `participant_<p_id>_task2_set<set_num>.csv` in the `output` folder. One row per trial:
+Results are saved as `participant_<p_id>_task2_set<set_num>.csv` in the `output` folder, with `_test` added before `.csv` for test runs. Each submitted answer is saved immediately. In Part 2, its row is updated when the confidence rating is confirmed; an answer submitted before quitting during a rating remains saved with a blank confidence value. One row per trial:
 
 | Column | Description |
 |---|---|
 | `participant_id` | Value passed via `--p_id` |
 | `part` | 1 or 2 |
-| `trial_num` | Trial number within the part |
+| `trial_num` | Trial number across both parts |
 | `condition` | congruent or incongruent |
 | `sentence_a`, `sentence_b` | Sentence text (Part 1 only) |
 | `trial_word` | The target word (Part 2 only) |
@@ -257,7 +257,7 @@ Results are saved as `participant_<p_id>_task2_set<set_num>.csv` in the `output`
 
 ### 3.2 What each module does
 
-- **`run_task1.py`** / **`run_task2.py`**: load the relevant config files, set up the monitor and window, collect the participant ID via `--p_id`, and run all screens in order. Results are collected as a list of dicts and saved as a CSV at the end.
+- **`run_task1.py`** / **`run_task2.py`**: load the relevant config files, set up the monitor and window, collect the participant ID via `--p_id`, and run all screens in order. `screens/utils/results.py` saves the CSV after every submitted answer and confidence rating, replacing it only after the updated file has been fully written. Completed runs keep the same output format.
 - **`system_config.yaml`**: holds machine-level settings shared by both tasks, monitor dimensions, viewing distance, window units, colors, and exit/rating instruction text.
 - **`config_task{n}_set{m}.yaml`**: holds all stimulus paths, trial definitions, instruction texts, and correct answers for a given task and stimulus set.
 - **`audio_player.py`**: shows a seekable audio player with a progress bar and play/pause toggle. The participant must play the audio at least once before continuing.

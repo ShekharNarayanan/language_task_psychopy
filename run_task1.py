@@ -1,7 +1,7 @@
 import yaml
 import argparse
 from pathlib import Path
-import pandas as pd
+from screens.utils.results import TrialResults
 
 # -- Load config ------------------------------------------
 root         = Path(__file__).parent
@@ -107,8 +107,9 @@ if  __name__ == '__main__':
     # create mouse object
     m = mouse.Mouse(win=win)
 
-    # define participant params
-    participant_results = []
+    suffix = '_test' if test_run_flag else ''
+    output_path = root / 'output' / f'participant_{participant_id}_task1_set_{set_num}{suffix}.csv'
+    participant_results = TrialResults(output_path)
 
     # ------------------------------------------------------------ part 1 ---------------------------------------------------------------------------------------------
     # run process for part 1
@@ -121,7 +122,6 @@ if  __name__ == '__main__':
 
         audios_i_trial = cfg_set['part_1'][f'trial_{i}']['audio_paths'] # get audios
         correct, selected, is_correct = run_audio_mcq_part1(win,m,all_colors,audio_paths=audios_i_trial, trial_num=i) # show options to choose from
-        confidence_rating = run_rating(win,text_color=text_color,rating_text=rating_instruction) # show confidence screen
         
         # save participant info
         participant_results.append({
@@ -131,8 +131,10 @@ if  __name__ == '__main__':
         'correct_option'  :  correct,
         'selected_option' :  selected,
         'is_correct'      :  is_correct, 
-        'confidence'      :  confidence_rating   
+        'confidence'      :  None
         })
+        confidence_rating = run_rating(win,text_color=text_color,rating_text=rating_instruction) # show confidence screen
+        participant_results.update_last(confidence=confidence_rating)
 
     trial_offset = total_trials_part_1 # remember the trial at which part 1 ended
 
@@ -147,7 +149,6 @@ if  __name__ == '__main__':
         options         = audios_j_trial
 
         correct, selected, is_correct = run_audio_mcq_part2(win=win,m=m,colors=all_colors,primary_audio=primary_audio,audio_paths=options,trial_num=trial_num)
-        confidence_rating = run_rating(win,text_color=text_color,rating_text=rating_instruction) 
 
         participant_results.append({
         'participant_id'  :  participant_id,
@@ -156,16 +157,10 @@ if  __name__ == '__main__':
         'correct_option'  :  correct,
         'selected_option' :  selected,
         'is_correct'      :  is_correct,   
-        'confidence'      :  confidence_rating        
+        'confidence'      :  None
         })
+        confidence_rating = run_rating(win,text_color=text_color,rating_text=rating_instruction)
+        participant_results.update_last(confidence=confidence_rating)
 
-    participant_df = pd.DataFrame(participant_results)
     show_instruction(win=win, text=exit_instruction, text_color=text_color)
-    # win.close()
-    if test_run_flag:
-        output_path = root / 'output' / f'participant_{participant_id}_task1_set_{set_num}_test.csv'
-        participant_df.to_csv(output_path)
-    else:
-        output_path = root / 'output' / f'participant_{participant_id}_task1_set_{set_num}.csv'
-        participant_df.to_csv(output_path)
     core.quit()

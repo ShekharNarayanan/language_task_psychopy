@@ -2,7 +2,7 @@ import yaml
 import random
 import argparse
 from pathlib import Path
-import pandas as pd
+from screens.utils.results import TrialResults
 
 # ── Load system config ────────────────────────────────────────────────────────
 root         = Path(__file__).parent
@@ -98,7 +98,9 @@ if __name__ == '__main__':
     # ── Create mouse ──────────────────────────────────────────────────────────
     m = mouse.Mouse(win=win)
 
-    participant_results = []
+    suffix = '_test' if test_run_flag else ''
+    output_path = root / 'output' / f'participant_{participant_id}_task2_set{set_num}{suffix}.csv'
+    participant_results = TrialResults(output_path, index=False)
 
     # ── Part 1 ────────────────────────────────────────────────────────────────
     show_instruction(win=win, text=welcome_text, text_color=text_color)
@@ -144,10 +146,6 @@ if __name__ == '__main__':
             incorrect_answer1=trial['incorrect_answer1'],
             incorrect_answer2=trial['incorrect_answer2'],
         )
-        confidence_rating = run_rating(
-            win, text_color=text_color,
-            rating_text=rating_instruction
-        )
 
         # if geen betekenis then its the incongruent condition
         if trial['correct_answer'] == 'geen betekenis':
@@ -163,15 +161,13 @@ if __name__ == '__main__':
             'condition':      condition_task2,
             'chosen_answer':  chosen_answer,
             'is_correct':     is_correct,
-            'confidence':     confidence_rating,
+            'confidence':     None,
         })
+        confidence_rating = run_rating(
+            win, text_color=text_color,
+            rating_text=rating_instruction
+        )
+        participant_results.update_last(confidence=confidence_rating)
 
-    # ── Save results ──────────────────────────────────────────────────────────
-    participant_df = pd.DataFrame(participant_results)
     show_instruction(win=win, text=exit_instruction, text_color=text_color)
-
-    suffix     = '_test' if test_run_flag else ''
-    output_path = root / 'output' / f'participant_{participant_id}_task2_set{set_num}{suffix}.csv'
-    participant_df.to_csv(output_path, index=False)
-
     core.quit()
