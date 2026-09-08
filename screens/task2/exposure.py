@@ -11,6 +11,8 @@ Returns the participant's response as a string.
 
 from psychopy import visual, event, core, sound
 
+from screens.utils.quit_confirmation import QuitConfirmation
+
 # ── Layout constants (degrees) ────────────────────────────────────────────────
 _TITLE_Y         =  9.0
 _SENTENCE_A_Y    =  5.5
@@ -159,6 +161,8 @@ def run_task2_part1(win, m, colors, trial_num,
         play_b_btn['lbl'].text   = "Afspelen"
         playing = None
 
+    quit_confirmation = QuitConfirmation(win, on_quit=stop_all)
+
     while True:
 
         # ── Detect natural end of playback ──────────────────────────────────
@@ -189,18 +193,16 @@ def run_task2_part1(win, m, colors, trial_num,
 
         geen_bg.draw()
         geen_lbl.draw()
+        keys = event.getKeys()
+        input_blocked = quit_confirmation.update(keys)
+        quit_confirmation.draw()
         win.flip()
+        if input_blocked:
+            continue
 
         # ── Keyboard input ────────────────────────────────────────────────────
-        keys = event.getKeys()
-
         for k in keys:
-            if k == 'escape':
-                stop_all()
-                win.close()
-                core.quit()
-                
-            elif played_a and played_b: # both audios need to have been played
+            if played_a and played_b: # both audios need to have been played
                 if k == 'return' and typed_text:
                     stop_all()
                     return typed_text.strip()

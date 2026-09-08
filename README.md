@@ -398,4 +398,4 @@ python -m run_task2 --p_id 1 --set_num 1 --test_run True
 - `--set_num`: which stimulus set to load (1 or 2)
 - `--test_run`: set to `True` for one trial per part, `False` for all trials
 
-Press **Escape** or **Q** at any point to quit the experiment.
+Press **Escape** to open a quit confirmation overlay. Press **Y** within five seconds to end the experiment, or **N** to return immediately. Without confirmation, the overlay closes automatically after five seconds. Responses are blocked while the overlay is open; audio playback continues. A confirmed exit is reported in the terminal.
