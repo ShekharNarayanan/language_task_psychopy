@@ -19,7 +19,7 @@ prefs.hardware['audioLib'] = sys_cfg['audio']['backends']
 #devices = getAudioDevices()
 #pprint(devices)
 
-prefs.hardware['audioDevice'] = 'Headphones (Realtek(R) Audio' # change this to your audio device
+prefs.hardware['audioDevice'] = 'Headphones (Realtek(R) Audio)' # change this to your audio device
 
 
 from psychopy import monitors, visual, core
