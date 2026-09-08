@@ -386,6 +386,8 @@ Main dependencies:
 
 ### 4.3 Run the experiment
 
+Both tasks prefer the audio device named in their startup script. If it is unavailable, they use the system default output, or the first available output if the default cannot be resolved. The selected device and any fallback are printed in the terminal. If no output device is available, startup stops with a message asking you to connect or enable headphones/speakers.
+
 ```bash
 python -m run_task1 --p_id 1 --set_num 1 --test_run True
 ```
