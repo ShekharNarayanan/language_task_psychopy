@@ -1,48 +1,54 @@
-import yaml
 import argparse
+from datetime import datetime
 from pathlib import Path
-import pandas as pd
-
-# -- Load config ------------------------------------------
-root         = Path(__file__).parent
-sys_cfg_path = root / "system_config.yaml"
-with open(sys_cfg_path) as f:   
-    sys_cfg = yaml.safe_load(f)
+from screens.utils.console_log import log_task_console
 
 
-
-# -- Audio backend must be set before other psychopy imports ------------─
-from psychopy import prefs
-prefs.hardware['audioLib'] = sys_cfg['audio']['backends']
-
-#from psychopy.tools.systemtools import getAudioDevices
-#from pprint import pprint
-#devices = getAudioDevices()
-#pprint(devices)
-
-prefs.hardware['audioDevice'] = 'Headphones (Realtek(R) Audio)' # change this to your audio device
-
-from psychopy import monitors, visual, core, gui
-from psychopy.hardware import mouse
-
-
-from screens.task1.audio_player  import run_audio_player
-from screens.task1.audio_mcq     import run_audio_mcq_part1, run_audio_mcq_part2
-from screens.utils.instructions  import show_instruction
-from screens.utils.rating        import run_rating
-
-
-if  __name__ == '__main__':
+if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--p_id', required=True, help='Participant ID')
     parser.add_argument('--set_num',required=True)
     parser.add_argument('--test_run',required=True)
+    parser.add_argument('--restart_at', type=int, default=None,
+                        help='Resume at this displayed trial number across both parts (1-based)')
     args = parser.parse_args()
 
     # get pid and set_num
     participant_id = args.p_id
     set_num        = args.set_num
     test_run_flag  = args.test_run.lower() == 'true'
+
+    root = Path(__file__).parent
+    suffix = '_test' if test_run_flag else ''
+    run_timestamp = datetime.now().strftime('%Y%m%d_%H%M%S_%f')
+    output_path = root / 'output' / f'participant_{participant_id}_task1_set_{set_num}{suffix}_{run_timestamp}.csv'
+    output_path = log_task_console(output_path)
+
+    import yaml
+    from screens.utils.results import TrialResults
+
+    # -- Load config ------------------------------------------
+    sys_cfg_path = root / "system_config.yaml"
+    with open(sys_cfg_path) as f:
+        sys_cfg = yaml.safe_load(f)
+
+
+
+    # -- Audio backend must be set before other psychopy imports ------------─
+    from psychopy import prefs
+    prefs.hardware['audioLib'] = sys_cfg['audio']['backends']
+
+    from screens.utils.audio_device import configure_audio_device
+    configure_audio_device(prefs.hardware, 'Headphones (Realtek(R) Audio)')
+
+    from psychopy import monitors, visual, core, gui
+    from psychopy.hardware import mouse
+
+
+    from screens.task1.audio_player  import run_audio_player
+    from screens.task1.audio_mcq     import run_audio_mcq_part1, run_audio_mcq_part2
+    from screens.utils.instructions  import show_instruction
+    from screens.utils.rating        import run_rating
 
     # load config file for chosen set
     cfg_set_path = root / f'config_task1_set{set_num}.yaml'
@@ -88,6 +94,10 @@ if  __name__ == '__main__':
         total_trials_part_1        = sys_cfg['task_1']['test_trials_part_1']
         total_trials_part_2        = sys_cfg['task_1']['test_trials_part_2']    
 
+    restart_at = args.restart_at if args.restart_at is not None else 1
+    total_trials = total_trials_part_1 + total_trials_part_2
+    if not 1 <= restart_at <= total_trials:
+        parser.error(f'--restart_at must be between 1 and {total_trials} for this run')
 
     # create monitor object
     mon = monitors.Monitor(
@@ -111,21 +121,21 @@ if  __name__ == '__main__':
     # create mouse object
     m = mouse.Mouse(win=win)
 
-    # define participant params
-    participant_results = []
+    participant_results = TrialResults(output_path)
 
     # ------------------------------------------------------------ part 1 ---------------------------------------------------------------------------------------------
     # run process for part 1
-    show_instruction(win=win, text=welcome_text, text_color=text_color)
-    run_audio_player(win=win, m=m, colors=all_colors, audio_path=primary_audio_part_1)
-    show_instruction(win=win, text=testing_text, text_color=text_color)
+    if args.restart_at is None:
+        show_instruction(win=win, text=welcome_text, text_color=text_color)
+        run_audio_player(win=win, m=m, colors=all_colors, audio_path=primary_audio_part_1)
+    if restart_at <= total_trials_part_1:
+        show_instruction(win=win, text=testing_text, text_color=text_color)
 
     # loop all trials for part 1
-    for i in range(1,total_trials_part_1+1):
+    for i in range(restart_at,total_trials_part_1+1):
 
         audios_i_trial = cfg_set['part_1'][f'trial_{i}']['audio_paths'] # get audios
         correct, selected, is_correct = run_audio_mcq_part1(win,m,all_colors,audio_paths=audios_i_trial, trial_num=i) # show options to choose from
-        confidence_rating = run_rating(win,text_color=text_color,rating_text=rating_instruction) # show confidence screen
         
         # save participant info
         participant_results.append({
@@ -135,8 +145,10 @@ if  __name__ == '__main__':
         'correct_option'  :  correct,
         'selected_option' :  selected,
         'is_correct'      :  is_correct, 
-        'confidence'      :  confidence_rating   
+        'confidence'      :  None
         })
+        confidence_rating = run_rating(win,text_color=text_color,rating_text=rating_instruction) # show confidence screen
+        participant_results.update_last(confidence=confidence_rating)
 
     trial_offset = total_trials_part_1 # remember the trial at which part 1 ended
 
@@ -144,14 +156,13 @@ if  __name__ == '__main__':
     # show transition screen to part 2
     show_instruction(win=win, text=part2_msg, text_color=text_color)
 
-    for j in range(1,total_trials_part_2+1):
+    for j in range(max(1, restart_at - trial_offset),total_trials_part_2+1):
         trial_num       = j + trial_offset # include offset, use this number to display on screen and in the participant data
         primary_audio   = cfg_set['part_2'][f'trial_{j}']['primary_audio']
         audios_j_trial  = cfg_set['part_2'][f'trial_{j}']['audio_paths']
         options         = audios_j_trial
 
         correct, selected, is_correct = run_audio_mcq_part2(win=win,m=m,colors=all_colors,primary_audio=primary_audio,audio_paths=options,trial_num=trial_num)
-        confidence_rating = run_rating(win,text_color=text_color,rating_text=rating_instruction) 
 
         participant_results.append({
         'participant_id'  :  participant_id,
@@ -160,16 +171,10 @@ if  __name__ == '__main__':
         'correct_option'  :  correct,
         'selected_option' :  selected,
         'is_correct'      :  is_correct,   
-        'confidence'      :  confidence_rating        
+        'confidence'      :  None
         })
+        confidence_rating = run_rating(win,text_color=text_color,rating_text=rating_instruction)
+        participant_results.update_last(confidence=confidence_rating)
 
-    participant_df = pd.DataFrame(participant_results)
     show_instruction(win=win, text=exit_instruction, text_color=text_color)
-    # win.close()
-    if test_run_flag:
-        output_path = root / 'output' / f'participant_{participant_id}_task1_set_{set_num}_test.csv'
-        participant_df.to_csv(output_path)
-    else:
-        output_path = root / 'output' / f'participant_{participant_id}_task1_set_{set_num}.csv'
-        participant_df.to_csv(output_path)
     core.quit()
