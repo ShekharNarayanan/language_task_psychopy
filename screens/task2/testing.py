@@ -78,7 +78,8 @@ def _make_option(win, col, text, y):
 
 def run_task2_part2(win, m, colors, trial_num,
                     audio_word,
-                    correct_answer, incorrect_answer1, incorrect_answer2):
+                    correct_answer, incorrect_answer1, incorrect_answer2,
+                    options_texts=None):
     """
     Run one Part 2 trial for Task 2.
 
@@ -95,6 +96,7 @@ def run_task2_part2(win, m, colors, trial_num,
         correct_answer:    Correct answer string (from config).
         incorrect_answer1: First incorrect answer string (from config).
         incorrect_answer2: Second incorrect answer string (from config).
+        options_texts:     Prepared option order; shuffled here only when omitted.
 
     Returns:
         Tuple (selected_answer, is_correct):
@@ -103,9 +105,10 @@ def run_task2_part2(win, m, colors, trial_num,
     """
     col = colors
 
-    # Shuffle the three answer options
-    options_texts = [correct_answer, incorrect_answer1, incorrect_answer2]
-    random.shuffle(options_texts)
+    # A prepared order preserves answer positions when restarting the task.
+    if options_texts is None:
+        options_texts = [correct_answer, incorrect_answer1, incorrect_answer2]
+        random.shuffle(options_texts)
 
     # Load audio
     snd_word = sound.Sound(audio_word)

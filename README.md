@@ -57,6 +57,7 @@ Meaning of parameters:
 1. `p_id`: the participant number for this current session. Can be any integer.
 2. `set_num`: the set for which the audio files have to be played. Can be 1 or 2.
 3. `test_run`: to run the test version of the experiment. If the flag is set to `True` you will get **one** trial for each part of the experiment. If set to `False`, you get all the trials. You can change these in the `system_config.yaml` file.
+4. `restart_at` (optional): resume at the given trial number, counting across both parts. Earlier trials are skipped. See [restarting a task](#restarting-a-task) below.
 
 ---
 
@@ -215,6 +216,7 @@ Results are saved as `participant_<p_id>_task2_set<set_num>_<timestamp>.csv` in 
 | `condition` | congruent or incongruent |
 | `sentence_a`, `sentence_b` | Sentence text (Part 1 only) |
 | `trial_word` | The target word (Part 2 only) |
+| `random_seed` | Randomization seed reused for the same participant, stimulus set, and test/full-run mode |
 | `chosen_answer` | Typed answer, 'geen betekenis', or selected option text |
 | `is_correct` | True or False (Part 2 only) |
 | `confidence` | Confidence rating (1 to 4, Part 2 only) |
@@ -399,5 +401,26 @@ python -m run_task2 --p_id 1 --set_num 1 --test_run True
 - `--p_id`: participant identifier, used to name the results CSV
 - `--set_num`: which stimulus set to load (1 or 2)
 - `--test_run`: set to `True` for one trial per part, `False` for all trials
+- `--restart_at`: optional first trial to present, using the 1-based number shown on screen across both parts
+
+#### Exiting a task
 
 Press **Escape** to open a quit confirmation overlay. Press **Y** within five seconds to end the experiment, or **N** to return immediately. Without confirmation, the overlay closes automatically after five seconds. Responses are blocked while the overlay is open; audio playback continues. A confirmed exit is reported in the terminal.
+
+
+#### Restarting a task
+
+Pass `--restart_at` to either task to skip earlier trials and start with the specified trial, inclusive. Trial numbers on screen and in the results CSV keep their original numbering. Omitting the argument runs the task normally.
+
+```bash
+python -m run_task1 --p_id 1 --set_num 1 --test_run False --restart_at 35
+python -m run_task2 --p_id 1 --set_num 1 --test_run False --restart_at 21
+```
+
+These examples start at the first trial of Part 2: Task 1 has 34 Part 1 trials, and Task 2 has 20. Starting within Part 1 runs its remaining trials followed by all of Part 2. Instructions for the resumed part are still shown; completed parts are skipped. In Task 1, specifying `--restart_at` also skips the welcome screen and initial audio exposure, including when restarting at trial 1.
+
+The value must be between 1 and the total number of trials for the selected run (42 for Task 1 or 40 for Task 2 with the current full-run configuration). Test runs use the trial counts in `system_config.yaml`, so the default test run accepts only 1 or 2.
+
+Task 2 saves a `random_seed` in every response. On launch, it reuses the seed from the most recently modified output CSV containing a seed for the same participant ID, stimulus set, and test/full-run mode. If no matching saved seed exists, it generates a random seed. The terminal reports whether the seed is new or restored. Older files without a seed cannot restore their original order; the terminal explains this when generating a replacement seed.
+
+Using the same seed recreates both parts' stimulus order and Part 2 answer-option positions before skipping trials. Keep the task configuration and trial counts unchanged when restarting. `restart_at` still refers to the displayed trial position across both parts. A restarted run saves only its new responses in a new timestamped CSV; previous output files are preserved. The seed is first written when an answer is submitted.

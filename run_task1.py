@@ -34,6 +34,8 @@ if  __name__ == '__main__':
     parser.add_argument('--p_id', required=True, help='Participant ID')
     parser.add_argument('--set_num',required=True)
     parser.add_argument('--test_run',required=True)
+    parser.add_argument('--restart_at', type=int, default=None,
+                        help='Resume at this displayed trial number across both parts (1-based)')
     args = parser.parse_args()
 
     # get pid and set_num
@@ -85,6 +87,10 @@ if  __name__ == '__main__':
         total_trials_part_1        = sys_cfg['task_1']['test_trials_part_1']
         total_trials_part_2        = sys_cfg['task_1']['test_trials_part_2']    
 
+    restart_at = args.restart_at if args.restart_at is not None else 1
+    total_trials = total_trials_part_1 + total_trials_part_2
+    if not 1 <= restart_at <= total_trials:
+        parser.error(f'--restart_at must be between 1 and {total_trials} for this run')
 
     # create monitor object
     mon = monitors.Monitor(
@@ -115,12 +121,14 @@ if  __name__ == '__main__':
 
     # ------------------------------------------------------------ part 1 ---------------------------------------------------------------------------------------------
     # run process for part 1
-    show_instruction(win=win, text=welcome_text, text_color=text_color)
-    run_audio_player(win=win, m=m, colors=all_colors, audio_path=primary_audio_part_1)
-    show_instruction(win=win, text=testing_text, text_color=text_color)
+    if args.restart_at is None:
+        show_instruction(win=win, text=welcome_text, text_color=text_color)
+        run_audio_player(win=win, m=m, colors=all_colors, audio_path=primary_audio_part_1)
+    if restart_at <= total_trials_part_1:
+        show_instruction(win=win, text=testing_text, text_color=text_color)
 
     # loop all trials for part 1
-    for i in range(1,total_trials_part_1+1):
+    for i in range(restart_at,total_trials_part_1+1):
 
         audios_i_trial = cfg_set['part_1'][f'trial_{i}']['audio_paths'] # get audios
         correct, selected, is_correct = run_audio_mcq_part1(win,m,all_colors,audio_paths=audios_i_trial, trial_num=i) # show options to choose from
@@ -144,7 +152,7 @@ if  __name__ == '__main__':
     # show transition screen to part 2
     show_instruction(win=win, text=part2_msg, text_color=text_color)
 
-    for j in range(1,total_trials_part_2+1):
+    for j in range(max(1, restart_at - trial_offset),total_trials_part_2+1):
         trial_num       = j + trial_offset # include offset, use this number to display on screen and in the participant data
         primary_audio   = cfg_set['part_2'][f'trial_{j}']['primary_audio']
         audios_j_trial  = cfg_set['part_2'][f'trial_{j}']['audio_paths']

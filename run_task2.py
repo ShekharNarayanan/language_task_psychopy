@@ -1,5 +1,4 @@
 import yaml
-import random
 import argparse
 from datetime import datetime
 from pathlib import Path
@@ -24,7 +23,8 @@ from psychopy.hardware import mouse
 
 from screens.utils.instructions  import show_instruction
 from screens.utils.rating        import run_rating
-from screens.utils.task2_utils import extract_trials, build_constrained_trial_sequence, extract_part2_trials
+from screens.utils.task2_utils import build_task2_trial_sequences
+from screens.utils.task2_seed import load_or_create_seed
 
 from screens.task2.exposure   import run_task2_part1
 from screens.task2.testing   import run_task2_part2
@@ -37,6 +37,8 @@ if __name__ == '__main__':
     parser.add_argument('--p_id',     required=True, help='Participant ID')
     parser.add_argument('--set_num',  required=True, help='Stimulus set number')
     parser.add_argument('--test_run', required=True, help='True for one trial per part')
+    parser.add_argument('--restart_at', type=int, default=None,
+                        help='Resume at this displayed trial number across both parts (1-based)')
     args = parser.parse_args()
 
     participant_id = args.p_id
@@ -78,6 +80,19 @@ if __name__ == '__main__':
         total_trials_part_1 = cfg_set['part_1']['congruent']['n_trials'] + cfg_set['part_1']['incongruent']['n_trials']
         total_trials_part_2 = cfg_set['part_2']['n_trials']
 
+    restart_at = args.restart_at if args.restart_at is not None else 1
+    total_trials = total_trials_part_1 + total_trials_part_2
+    if not 1 <= restart_at <= total_trials:
+        parser.error(f'--restart_at must be between 1 and {total_trials} for this run')
+
+    try:
+        random_seed = load_or_create_seed(root / 'output', participant_id, set_num, test_run_flag)
+    except (OSError, ValueError) as error:
+        parser.error(str(error))
+    part1_trials, part2_trials = build_task2_trial_sequences(cfg_set, random_seed)
+    part1_trials = part1_trials[:total_trials_part_1]
+    part2_trials = part2_trials[:total_trials_part_2]
+
     # ── Create monitor ────────────────────────────────────────────────────────
     mon = monitors.Monitor(
         name=monitor_name,
@@ -105,12 +120,12 @@ if __name__ == '__main__':
     participant_results = TrialResults(output_path, index=False)
 
     # ── Part 1 ────────────────────────────────────────────────────────────────
-    show_instruction(win=win, text=welcome_text, text_color=text_color)
+    if restart_at <= total_trials_part_1:
+        show_instruction(win=win, text=welcome_text, text_color=text_color)
 
-    congruent_pool   = extract_trials(cfg_set['part_1'], 'congruent',   'congruent')
-    incongruent_pool = extract_trials(cfg_set['part_1'], 'incongruent', 'incongruent')
-    part1_trials     = build_constrained_trial_sequence(congruent_pool, incongruent_pool)[:total_trials_part_1]
     for i, trial in enumerate(part1_trials, start=1):
+        if i < restart_at:
+            continue
         chosen_answer = run_task2_part1(
             win=win, m=m, colors=all_colors,
             trial_num=i,
@@ -122,6 +137,7 @@ if __name__ == '__main__':
 
         participant_results.append({
             'participant_id': participant_id,
+            'random_seed':    random_seed,
             'part':           1,
             'trial_num':      i,
             'condition':      trial['condition'],
@@ -135,11 +151,10 @@ if __name__ == '__main__':
     # ── Part 2 ────────────────────────────────────────────────────────────────
     show_instruction(win=win, text=part2_msg, text_color=text_color)
 
-    geen_pool, real_pool = extract_part2_trials(cfg_set['part_2'])
-    part2_trials = build_constrained_trial_sequence(real_pool, geen_pool)[:total_trials_part_2]
-
     for j, trial in enumerate(part2_trials, start=1):
         trial_num = j + trial_offset
+        if trial_num < restart_at:
+            continue
         chosen_answer, is_correct = run_task2_part2(
             win=win, m=m, colors=all_colors,
             trial_num=trial_num,
@@ -147,6 +162,7 @@ if __name__ == '__main__':
             correct_answer= trial['correct_answer'],
             incorrect_answer1=trial['incorrect_answer1'],
             incorrect_answer2=trial['incorrect_answer2'],
+            options_texts=trial['options_texts'],
         )
 
         # if geen betekenis then its the incongruent condition
@@ -157,6 +173,7 @@ if __name__ == '__main__':
 
         participant_results.append({
             'participant_id': participant_id,
+            'random_seed':    random_seed,
             'part':           2,
             'trial_num':      trial_num,
             'trial_word':     trial['word'],
