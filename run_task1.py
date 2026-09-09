@@ -1,35 +1,10 @@
-import yaml
 import argparse
 from datetime import datetime
 from pathlib import Path
-from screens.utils.results import TrialResults
-
-# -- Load config ------------------------------------------
-root         = Path(__file__).parent
-sys_cfg_path = root / "system_config.yaml"
-with open(sys_cfg_path) as f:   
-    sys_cfg = yaml.safe_load(f)
+from screens.utils.console_log import log_task_console
 
 
-
-# -- Audio backend must be set before other psychopy imports ------------─
-from psychopy import prefs
-prefs.hardware['audioLib'] = sys_cfg['audio']['backends']
-
-from screens.utils.audio_device import configure_audio_device
-configure_audio_device(prefs.hardware, 'Headphones (Realtek(R) Audio)')
-
-from psychopy import monitors, visual, core, gui
-from psychopy.hardware import mouse
-
-
-from screens.task1.audio_player  import run_audio_player
-from screens.task1.audio_mcq     import run_audio_mcq_part1, run_audio_mcq_part2
-from screens.utils.instructions  import show_instruction
-from screens.utils.rating        import run_rating
-
-
-if  __name__ == '__main__':
+if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--p_id', required=True, help='Participant ID')
     parser.add_argument('--set_num',required=True)
@@ -42,6 +17,38 @@ if  __name__ == '__main__':
     participant_id = args.p_id
     set_num        = args.set_num
     test_run_flag  = args.test_run.lower() == 'true'
+
+    root = Path(__file__).parent
+    suffix = '_test' if test_run_flag else ''
+    run_timestamp = datetime.now().strftime('%Y%m%d_%H%M%S_%f')
+    output_path = root / 'output' / f'participant_{participant_id}_task1_set_{set_num}{suffix}_{run_timestamp}.csv'
+    output_path = log_task_console(output_path)
+
+    import yaml
+    from screens.utils.results import TrialResults
+
+    # -- Load config ------------------------------------------
+    sys_cfg_path = root / "system_config.yaml"
+    with open(sys_cfg_path) as f:
+        sys_cfg = yaml.safe_load(f)
+
+
+
+    # -- Audio backend must be set before other psychopy imports ------------─
+    from psychopy import prefs
+    prefs.hardware['audioLib'] = sys_cfg['audio']['backends']
+
+    from screens.utils.audio_device import configure_audio_device
+    configure_audio_device(prefs.hardware, 'Headphones (Realtek(R) Audio)')
+
+    from psychopy import monitors, visual, core, gui
+    from psychopy.hardware import mouse
+
+
+    from screens.task1.audio_player  import run_audio_player
+    from screens.task1.audio_mcq     import run_audio_mcq_part1, run_audio_mcq_part2
+    from screens.utils.instructions  import show_instruction
+    from screens.utils.rating        import run_rating
 
     # load config file for chosen set
     cfg_set_path = root / f'config_task1_set{set_num}.yaml'
@@ -114,9 +121,6 @@ if  __name__ == '__main__':
     # create mouse object
     m = mouse.Mouse(win=win)
 
-    suffix = '_test' if test_run_flag else ''
-    run_timestamp = datetime.now().strftime('%Y%m%d_%H%M%S_%f')
-    output_path = root / 'output' / f'participant_{participant_id}_task1_set_{set_num}{suffix}_{run_timestamp}.csv'
     participant_results = TrialResults(output_path)
 
     # ------------------------------------------------------------ part 1 ---------------------------------------------------------------------------------------------

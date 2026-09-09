@@ -388,6 +388,8 @@ Main dependencies:
 
 ### 4.3 Run the experiment
 
+Both tasks also save everything printed to the console (including startup messages, warnings, and error tracebacks) in the `logs` folder, which is created automatically. Each log uses exactly the same filename as its results CSV, with `.log` instead of `.csv`, including the same timestamp and optional `_test` suffix. Output remains visible in the console and is copied to the log as it arrives. A log is available even if startup fails before any responses are saved.
+
 Both tasks prefer the audio device named in their startup script. If it is unavailable, they use the system default output, or the first available output if the default cannot be resolved. The selected device and any fallback are printed in the terminal. If no output device is available, startup stops with a message asking you to connect or enable headphones/speakers.
 
 ```bash
