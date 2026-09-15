@@ -10,6 +10,8 @@ whether it was correct.
 import random
 from psychopy import visual, event, core, sound
 
+from screens.utils.quit_confirmation import QuitConfirmation
+
 # ── Layout constants (degrees) ────────────────────────────────────────────────
 _TITLE_Y         =  10.0
 _WORD_POS        = (-8.0, 7.0)    # play button for the target word
@@ -76,7 +78,8 @@ def _make_option(win, col, text, y):
 
 def run_task2_part2(win, m, colors, trial_num,
                     audio_word,
-                    correct_answer, incorrect_answer1, incorrect_answer2):
+                    correct_answer, incorrect_answer1, incorrect_answer2,
+                    options_texts=None):
     """
     Run one Part 2 trial for Task 2.
 
@@ -93,6 +96,7 @@ def run_task2_part2(win, m, colors, trial_num,
         correct_answer:    Correct answer string (from config).
         incorrect_answer1: First incorrect answer string (from config).
         incorrect_answer2: Second incorrect answer string (from config).
+        options_texts:     Prepared option order; shuffled here only when omitted.
 
     Returns:
         Tuple (selected_answer, is_correct):
@@ -101,9 +105,10 @@ def run_task2_part2(win, m, colors, trial_num,
     """
     col = colors
 
-    # Shuffle the three answer options
-    options_texts = [correct_answer, incorrect_answer1, incorrect_answer2]
-    random.shuffle(options_texts)
+    # A prepared order preserves answer positions when restarting the task.
+    if options_texts is None:
+        options_texts = [correct_answer, incorrect_answer1, incorrect_answer2]
+        random.shuffle(options_texts)
 
     # Load audio
     snd_word = sound.Sound(audio_word)
@@ -143,6 +148,8 @@ def run_task2_part2(win, m, colors, trial_num,
         word_btn['is_playing'] = False
         word_btn['play_lbl'].text = "Afspelen"
 
+    quit_confirmation = QuitConfirmation(win, on_quit=stop_word)
+
     while True:
 
         # ── 1. Detect natural end of playback ─────────────────────────────────
@@ -171,7 +178,12 @@ def run_task2_part2(win, m, colors, trial_num,
         else:
             hint.draw()
 
+        keys = event.getKeys()
+        input_blocked = quit_confirmation.update(keys)
+        quit_confirmation.draw()
         win.flip()
+        if input_blocked:
+            continue
 
         # ── 4. Mouse input ────────────────────────────────────────────────────
         if m.getLeftButtonPressed():
@@ -207,9 +219,3 @@ def run_task2_part2(win, m, colors, trial_num,
             stop_word()
             is_correct = selected_text == correct_answer
             return selected_text, is_correct
-
-        keys = event.getKeys()
-        if 'escape' in keys or 'q' in keys:
-            stop_word()
-            win.close()
-            core.quit()

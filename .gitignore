@@ -4,9 +4,11 @@ __pycache__**
 stimuli/Task_PhonSL.xlsx
 Semantic_task.xlsx
 output/*
+logs/*
 
 # keep
 !output/.gitkeep
+!logs/.gitkeep
 
 
 

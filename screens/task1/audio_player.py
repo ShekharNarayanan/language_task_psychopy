@@ -7,6 +7,8 @@ The participant must play the audio at least once before they can continue.
 
 from psychopy import visual, event, core, sound
 
+from screens.utils.quit_confirmation import QuitConfirmation
+
 # ── Layout constants (degrees) ────────────────────────────────────────────────
 # All positions and sizes are in degrees of visual angle to stay consistent
 # with the monitor-calibrated window units set in main.py.
@@ -135,7 +137,7 @@ def run_audio_player(win, m, colors, audio_path):
       4. Handles mouse clicks (seek, play/pause, continue).
 
     The Continue button stays gray and unclickable until the audio has been
-    played at least once. Escape quits the experiment at any point.
+    played at least once. Escape opens a confirmation overlay before quitting.
 
     Args:
         win:        PsychoPy Window object.
@@ -153,6 +155,8 @@ def run_audio_player(win, m, colors, audio_path):
     audio_played = False   # whether audio has been played at least once
     elapsed      = 0.0     # current playback position in seconds
     play_start   = 0.0     # value of elapsed when play was last pressed
+
+    quit_confirmation = QuitConfirmation(win, on_quit=audio.stop)
 
     while True:
 
@@ -184,7 +188,12 @@ def run_audio_player(win, m, colors, audio_path):
         # ── 3. Draw & flip ────────────────────────────────────────────────────
         for stim in s.values():
             stim.draw()
+        keys = event.getKeys()
+        input_blocked = quit_confirmation.update(keys)
+        quit_confirmation.draw()
         win.flip()
+        if input_blocked:
+            continue
 
         # ── 4. Mouse input ────────────────────────────────────────────────────
         if m.getLeftButtonPressed():
@@ -222,8 +231,3 @@ def run_audio_player(win, m, colors, audio_path):
                 # Advance to next screen
                 audio.stop()
                 break
-
-        if "escape" in event.getKeys():
-            audio.stop()
-            win.close()
-            core.quit()

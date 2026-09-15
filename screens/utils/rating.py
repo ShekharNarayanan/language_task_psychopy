@@ -7,6 +7,8 @@ then Enter to confirm. Returns the selected rating as an integer.
 
 from psychopy import visual, event
 
+from screens.utils.quit_confirmation import QuitConfirmation
+
 # ── Layout constants (degrees) ────────────────────────────────────────────────
 _BOX_Y          =  0.0    # vertical centre of the rating boxes
 _BOX_SIZE       =  2.0    # width and height of each box
@@ -83,6 +85,8 @@ def run_rating(win, text_color, rating_text):
 
     selected = None
 
+    quit_confirmation = QuitConfirmation(win)
+
     while True:
 
         # ── Update box colours based on selection ─────────────────────────────
@@ -102,11 +106,14 @@ def run_rating(win, text_color, rating_text):
         lbl_guess.draw()
         lbl_remember.draw()
         # hint.draw()
+        keys = event.getKeys()
+        input_blocked = quit_confirmation.update(keys)
+        quit_confirmation.draw()
         win.flip()
+        if input_blocked:
+            continue
 
         # ── Keyboard input ────────────────────────────────────────────────────
-        keys = event.getKeys()
-
         for k in keys:
             if k in ('1', '2', '3', '4'):
                 selected = int(k)

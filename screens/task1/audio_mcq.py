@@ -13,6 +13,8 @@ Part 2: Same MCQ but with a primary audio clip shown at the top of the screen.
 import random
 from psychopy import visual, event, core, sound
 
+from screens.utils.quit_confirmation import QuitConfirmation
+
 # ---- Layout constants (degrees) ------------------------------------------------------------------------------------------------
 _OPTION_START_Y  =  3.5 # 7.0    # y position of the first audio option
 _OPTION_SPACING  =  4.5    # vertical distance between options
@@ -239,6 +241,8 @@ def run_audio_mcq_part1(win, m, colors, audio_paths, trial_num, correct_index=0)
         for i, path in enumerate(shuffled_paths)
     ]
 
+    quit_confirmation = QuitConfirmation(win, on_quit=lambda: _stop_all(players))
+
     while True:
 
         # ---- 1. Update playback states ----------------------------------------------------------------------------------
@@ -266,7 +270,12 @@ def run_audio_mcq_part1(win, m, colors, audio_paths, trial_num, correct_index=0)
             p['check_bg'].draw()
             p['check_mark'].draw()
 
+        keys = event.getKeys()
+        input_blocked = quit_confirmation.update(keys)
+        quit_confirmation.draw()
         win.flip()
+        if input_blocked:
+            continue
 
         # ---- 4. Mouse input --------------------------------------------------------------------------------------------------------
         if m.getLeftButtonPressed():
@@ -302,11 +311,6 @@ def run_audio_mcq_part1(win, m, colors, audio_paths, trial_num, correct_index=0)
                 selected   = next(i for i, p in enumerate(players) if p['checked'])
                 is_correct = selected == correct_position
                 return correct_position, selected, is_correct
-
-        if "escape" in event.getKeys():
-            _stop_all(players)
-            win.close()
-            core.quit()
 
 
 # ---- Part 2 ----------------------------------------------------------------------------------------------------------------------------------------
@@ -356,6 +360,8 @@ def run_audio_mcq_part2(win, m, colors, primary_audio, audio_paths, trial_num, c
         for i, path in enumerate(shuffled_paths)
     ]
 
+    quit_confirmation = QuitConfirmation(win, on_quit=lambda: _stop_all([primary] + players))
+
     while True:
 
         # ---- 1. Update primary playback state --------------------------------------------------------------------
@@ -398,7 +404,12 @@ def run_audio_mcq_part2(win, m, colors, primary_audio, audio_paths, trial_num, c
             p['check_bg'].draw()
             p['check_mark'].draw()
 
+        keys = event.getKeys()
+        input_blocked = quit_confirmation.update(keys)
+        quit_confirmation.draw()
         win.flip()
+        if input_blocked:
+            continue
 
         # ---- 5. Mouse input --------------------------------------------------------------------------------------------------------
         if m.getLeftButtonPressed():
@@ -459,9 +470,3 @@ def run_audio_mcq_part2(win, m, colors, primary_audio, audio_paths, trial_num, c
                     selected   = next(i for i, p in enumerate(players) if p['checked'])
                     is_correct = selected == correct_position
                     return correct_position, selected, is_correct
-
-        if "escape" in event.getKeys():
-            _stop_all(players)
-            primary['audio'].stop()
-            win.close()
-            core.quit()

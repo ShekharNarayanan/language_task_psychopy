@@ -7,7 +7,7 @@ Helper functions for building and ordering trial sequences.
 import random
 
 
-def extract_trials(cfg_part, condition_key, condition_label):
+def extract_trials(cfg_part, condition_key, condition_label, *, rng=None):
     """
     Pull all trials from one condition block in the config, tag each
     with its condition label, and shuffle the order randomly.
@@ -16,6 +16,7 @@ def extract_trials(cfg_part, condition_key, condition_label):
         cfg_part:        The part_1 section of the config dict.
         condition_key:   Key in cfg_part to read from ('congruent' or 'incongruent').
         condition_label: String label to tag each trial with ('congruent' or 'incongruent').
+        rng:            Optional random.Random instance for reproducible ordering.
 
     Returns:
         Shuffled list of trial dicts, each with 'condition', 'sentence_a',
@@ -32,11 +33,11 @@ def extract_trials(cfg_part, condition_key, condition_label):
             'sentence_b':       data['sentence_b'],
             'sentence_b_audio': data['sentence_b_audio'],
         })
-    random.shuffle(trials)
+    (rng if rng is not None else random).shuffle(trials)
     return trials
 
 
-def build_constrained_trial_sequence(pool_a, pool_b, max_consecutive=2):
+def build_constrained_trial_sequence(pool_a, pool_b, max_consecutive=2, *, rng=None):
     """
     Merge two trial pools into a single pseudorandom sequence where no
     condition appears more than max_consecutive times in a row.
@@ -55,6 +56,7 @@ def build_constrained_trial_sequence(pool_a, pool_b, max_consecutive=2):
         pool_a:           List of trial dicts for the first condition (pre-shuffled).
         pool_b:           List of trial dicts for the second condition (pre-shuffled).
         max_consecutive:  Maximum allowed consecutive trials from one condition.
+        rng:              Optional random.Random instance for reproducible ordering.
 
     Returns:
         Ordered list of trial dicts ready to iterate over in the trial loop.
@@ -91,13 +93,13 @@ def build_constrained_trial_sequence(pool_a, pool_b, max_consecutive=2):
             # Both conditions are allowed, pick randomly from whatever still has trials
             allowed_conditions = [c for c in pools if pools[c]]
 
-        chosen_condition = random.choice(allowed_conditions)
+        chosen_condition = (rng if rng is not None else random).choice(allowed_conditions)
         result.append(pools[chosen_condition].pop(0))
 
     return result
 
 
-def extract_part2_trials(cfg_part2):
+def extract_part2_trials(cfg_part2, *, rng=None):
     """
     Pull all part 2 trials from the config, tag each with whether the
     correct answer is 'geen betekenis' or a real word, and shuffle each
@@ -105,6 +107,7 @@ def extract_part2_trials(cfg_part2):
 
     Args:
         cfg_part2: The part_2 section of the config dict.
+        rng:       Optional random.Random instance for reproducible ordering.
 
     Returns:
         Two shuffled lists: (geen_betekenis_pool, real_word_pool), each
@@ -129,6 +132,22 @@ def extract_part2_trials(cfg_part2):
         else:
             real_word_pool.append(trial)
 
-    random.shuffle(geen_betekenis_pool)
-    random.shuffle(real_word_pool)
+    rng = rng if rng is not None else random
+    rng.shuffle(geen_betekenis_pool)
+    rng.shuffle(real_word_pool)
     return geen_betekenis_pool, real_word_pool
+
+
+def build_task2_trial_sequences(cfg_set, seed):
+    """Prepare the complete task, including option order, before skipping trials."""
+    rng = random.Random(seed)
+    congruent = extract_trials(cfg_set['part_1'], 'congruent', 'congruent', rng=rng)
+    incongruent = extract_trials(cfg_set['part_1'], 'incongruent', 'incongruent', rng=rng)
+    part1 = build_constrained_trial_sequence(congruent, incongruent, rng=rng)
+    geen, real = extract_part2_trials(cfg_set['part_2'], rng=rng)
+    part2 = build_constrained_trial_sequence(real, geen, rng=rng)
+    for trial in part2:
+        options = [trial['correct_answer'], trial['incorrect_answer1'], trial['incorrect_answer2']]
+        rng.shuffle(options)
+        trial['options_texts'] = options
+    return part1, part2
