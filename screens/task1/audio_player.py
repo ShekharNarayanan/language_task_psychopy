@@ -126,7 +126,7 @@ def _build_stims(win, col, total_dur):
 
 # ── Main ──────────────────────────────────────────────────────────────────────
 
-def run_audio_player(win, m, colors, audio_path):
+def run_audio_player(win, m, colors, audio_path, *, speaker):
     """
     Run the primary audio playback screen.
 
@@ -144,9 +144,10 @@ def run_audio_player(win, m, colors, audio_path):
         m:          PsychoPy Mouse object.
         colors:     Colors dict from config (keys: text, accent, muted, success).
         audio_path: Path to the audio file to play.
+        speaker:    Shared SpeakerDevice owned by the task runner.
     """
     col   = colors
-    audio = sound.Sound(f'{audio_path}')
+    audio = sound.Sound(audio_path, speaker=speaker)
     dur   = audio.getDuration()
     clock = core.Clock()   # measures time elapsed since last play/seek
     s     = _build_stims(win, col, dur)

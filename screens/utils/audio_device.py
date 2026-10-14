@@ -1,6 +1,19 @@
-"""Choose an available output before PsychoPy creates any sounds."""
+"""Select and manage the task's shared audio output."""
 
 import sys
+from contextlib import contextmanager
+
+
+@contextmanager
+def shared_audio_device():
+    """Keep one speaker open for a task and release it on every exit path."""
+    from psychopy.hardware.speaker import SpeakerDevice
+
+    speaker = SpeakerDevice()
+    try:
+        yield speaker
+    finally:
+        speaker.close()
 
 
 def _default_output_name(audio):

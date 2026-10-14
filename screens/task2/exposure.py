@@ -56,7 +56,7 @@ def _make_play_button(win, col, pos):
 
 def run_task2_part1(win, m, colors, trial_num,
                     sentence_a, sentence_a_audio,
-                    sentence_b, sentence_b_audio):
+                    sentence_b, sentence_b_audio, *, speaker):
     """
     Run one Part 1 trial for Task 2.
 
@@ -75,6 +75,7 @@ def run_task2_part1(win, m, colors, trial_num,
         sentence_a_audio:  Path to sentence A audio file.
         sentence_b:        Second sentence string (from config).
         sentence_b_audio:  Path to sentence B audio file.
+        speaker:           Shared SpeakerDevice owned by the task runner.
 
     Returns:
         Response string -- either the typed answer or 'geen betekenis'.
@@ -83,8 +84,8 @@ def run_task2_part1(win, m, colors, trial_num,
     typed_text   = ''
 
     # Load sentence audio and clocks for end-of-playback detection
-    snd_a = sound.Sound(sentence_a_audio)
-    snd_b = sound.Sound(sentence_b_audio)
+    snd_a = sound.Sound(sentence_a_audio, speaker=speaker)
+    snd_b = sound.Sound(sentence_b_audio, speaker=speaker)
     clk_a = core.Clock()
     clk_b = core.Clock()
     dur_a = snd_a.getDuration()

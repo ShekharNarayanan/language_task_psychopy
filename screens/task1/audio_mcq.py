@@ -46,7 +46,7 @@ def _hit(mx, my, cx, cy, w, h):
     return abs(mx - cx) <= w / 2 and abs(my - cy) <= h / 2
 
 
-def _make_player(win, col, label, y, audio_path):
+def _make_player(win, col, label, y, audio_path, *, speaker):
     """
     Build one audio option row — its label, play button, checkbox, and
     playback state — and return everything as a single dict.
@@ -60,11 +60,12 @@ def _make_player(win, col, label, y, audio_path):
         label:      Letter shown next to this option ('A', 'B', 'C', 'D').
         y:          Vertical position of this row on screen (degrees).
         audio_path: Path to this option's audio file.
+        speaker:    Shared SpeakerDevice owned by the task runner.
 
     Returns:
         Dict containing all stims and playback state for this option.
     """
-    audio = sound.Sound(audio_path)
+    audio = sound.Sound(audio_path, speaker=speaker)
     return {
         'lbl': visual.TextStim(
             win, text=label,
@@ -101,7 +102,7 @@ def _make_player(win, col, label, y, audio_path):
     }
 
 
-def _make_primary_player(win, col, audio_path):
+def _make_primary_player(win, col, audio_path, *, speaker):
     """
     Build the primary audio player for part 2 — a single play button at the
     top of the screen with no checkbox. Same clock-based end detection as
@@ -111,11 +112,12 @@ def _make_primary_player(win, col, audio_path):
         win:        PsychoPy Window.
         col:        Colors dict from config.
         audio_path: Path to the primary audio file.
+        speaker:    Shared SpeakerDevice owned by the task runner.
 
     Returns:
         Dict containing stims and playback state for the primary player.
     """
-    audio = sound.Sound(audio_path)
+    audio = sound.Sound(audio_path, speaker=speaker)
     return {
         'lbl': visual.TextStim(
             win, text="Referentie",
@@ -195,7 +197,7 @@ def _stop_all(players):
 
 # ---- Part 1 ----------------------------------------------------------------------------------------------------------------------------------------
 
-def run_audio_mcq_part1(win, m, colors, audio_paths, trial_num, correct_index=0):
+def run_audio_mcq_part1(win, m, colors, audio_paths, trial_num, correct_index=0, *, speaker):
     """
     Run one part 1 multiple choice trial.
 
@@ -217,6 +219,7 @@ def run_audio_mcq_part1(win, m, colors, audio_paths, trial_num, correct_index=0)
         trial_num:     Trial number shown as the screen title.
         correct_index: Which path in audio_paths is the correct answer
                        (default 0, meaning the first path is always correct).
+        speaker:       Shared SpeakerDevice owned by the task runner.
 
     Returns:
         Tuple (correct_position, selected, is_correct):
@@ -237,7 +240,8 @@ def run_audio_mcq_part1(win, m, colors, audio_paths, trial_num, correct_index=0)
     screen['confirm_bg'].pos  = (10.0, confirm_y)  # added
     screen['confirm_lbl'].pos = (10.0, confirm_y) # added                                    
     players = [
-        _make_player(win, col, _LABELS[i], _OPTION_START_Y - i * _OPTION_SPACING, path)
+        _make_player(win, col, _LABELS[i], _OPTION_START_Y - i * _OPTION_SPACING,
+                     path, speaker=speaker)
         for i, path in enumerate(shuffled_paths)
     ]
 
@@ -315,7 +319,8 @@ def run_audio_mcq_part1(win, m, colors, audio_paths, trial_num, correct_index=0)
 
 # ---- Part 2 ----------------------------------------------------------------------------------------------------------------------------------------
 
-def run_audio_mcq_part2(win, m, colors, primary_audio, audio_paths, trial_num, correct_index=0):
+def run_audio_mcq_part2(win, m, colors, primary_audio, audio_paths, trial_num,
+                      correct_index=0, *, speaker):
     """
     Run one part 2 multiple choice trial.
 
@@ -334,6 +339,7 @@ def run_audio_mcq_part2(win, m, colors, primary_audio, audio_paths, trial_num, c
         trial_num:     Trial number shown as the screen title.
         correct_index: Which path in audio_paths is the correct answer
                        (default 0, meaning the first path is always correct).
+        speaker:       Shared SpeakerDevice owned by the task runner.
 
     Returns:
         Tuple (correct_position, selected, is_correct):
@@ -349,14 +355,15 @@ def run_audio_mcq_part2(win, m, colors, primary_audio, audio_paths, trial_num, c
     original_indices, shuffled_paths = zip(*indexed)
     correct_position = list(original_indices).index(correct_index)
 
-    primary = _make_primary_player(win, col, primary_audio)
+    primary = _make_primary_player(win, col, primary_audio, speaker=speaker)
     screen  = _build_screen_stims(win, col, trial_num, show_divider=True)
     confirm_y = (_OPTION_START_Y - (len(audio_paths) - 1) * _OPTION_SPACING) - 3.0  # added
     screen['confirm_bg'].pos  = (10.0, confirm_y) # added
     screen['confirm_lbl'].pos = (10.0, confirm_y) # added
 
     players = [
-        _make_player(win, col, _LABELS[i], _OPTION_START_Y - i * _OPTION_SPACING, path)
+        _make_player(win, col, _LABELS[i], _OPTION_START_Y - i * _OPTION_SPACING,
+                     path, speaker=speaker)
         for i, path in enumerate(shuffled_paths)
     ]
 
