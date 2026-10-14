@@ -79,7 +79,7 @@ def _make_option(win, col, text, y):
 def run_task2_part2(win, m, colors, trial_num,
                     audio_word,
                     correct_answer, incorrect_answer1, incorrect_answer2,
-                    options_texts=None):
+                    options_texts=None, *, speaker):
     """
     Run one Part 2 trial for Task 2.
 
@@ -97,6 +97,7 @@ def run_task2_part2(win, m, colors, trial_num,
         incorrect_answer1: First incorrect answer string (from config).
         incorrect_answer2: Second incorrect answer string (from config).
         options_texts:     Prepared option order; shuffled here only when omitted.
+        speaker:           Shared SpeakerDevice owned by the task runner.
 
     Returns:
         Tuple (selected_answer, is_correct):
@@ -111,7 +112,7 @@ def run_task2_part2(win, m, colors, trial_num,
         random.shuffle(options_texts)
 
     # Load audio
-    snd_word = sound.Sound(audio_word)
+    snd_word = sound.Sound(audio_word, speaker=speaker)
 
     # Clock for end-of-playback detection
     clk_word = core.Clock()

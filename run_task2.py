@@ -35,7 +35,7 @@ if __name__ == '__main__':
     from psychopy import prefs
     prefs.hardware['audioLib'] = sys_cfg['audio']['backends']
 
-    from screens.utils.audio_device import configure_audio_device
+    from screens.utils.audio_device import configure_audio_device, shared_audio_device
     configure_audio_device(prefs.hardware, 'Headphones (Realtek(R) Audio)')
 
 
@@ -107,88 +107,91 @@ if __name__ == '__main__':
     mon.setSizePix((width_px, height_px))
 
     # ── Create window ─────────────────────────────────────────────────────────
-    win = visual.Window(
-        checkTiming=False,
-        infoMsg='',
-        monitor=mon,
-        units=window_units,
-        fullscr=full_scr,
-        color=screen_bg_color
-    )
-
-    # ── Create mouse ──────────────────────────────────────────────────────────
-    m = mouse.Mouse(win=win)
-
-    participant_results = TrialResults(output_path, index=False)
-
-    # ── Part 1 ────────────────────────────────────────────────────────────────
-    if restart_at <= total_trials_part_1:
-        show_instruction(win=win, text=welcome_text, text_color=text_color)
-
-    for i, trial in enumerate(part1_trials, start=1):
-        if i < restart_at:
-            continue
-        chosen_answer = run_task2_part1(
-            win=win, m=m, colors=all_colors,
-            trial_num=i,
-            sentence_a=trial['sentence_a'],
-            sentence_a_audio=trial['sentence_a_audio'],
-            sentence_b=trial['sentence_b'],
-            sentence_b_audio=trial['sentence_b_audio']
+    with shared_audio_device() as speaker:
+        win = visual.Window(
+            checkTiming=False,
+            infoMsg='',
+            monitor=mon,
+            units=window_units,
+            fullscr=full_scr,
+            color=screen_bg_color
         )
 
-        participant_results.append({
-            'participant_id': participant_id,
-            'random_seed':    random_seed,
-            'part':           1,
-            'trial_num':      i,
-            'condition':      trial['condition'],
-            'sentence_a':     trial['sentence_a'],
-            'sentence_b':     trial['sentence_b'],
-            'chosen_answer':  chosen_answer,
-        })
+        # ── Create mouse ──────────────────────────────────────────────────────────
+        m = mouse.Mouse(win=win)
 
-    trial_offset = len(part1_trials)
+        participant_results = TrialResults(output_path, index=False)
 
-    # ── Part 2 ────────────────────────────────────────────────────────────────
-    show_instruction(win=win, text=part2_msg, text_color=text_color)
+        # ── Part 1 ────────────────────────────────────────────────────────────────
+        if restart_at <= total_trials_part_1:
+            show_instruction(win=win, text=welcome_text, text_color=text_color)
 
-    for j, trial in enumerate(part2_trials, start=1):
-        trial_num = j + trial_offset
-        if trial_num < restart_at:
-            continue
-        chosen_answer, is_correct = run_task2_part2(
-            win=win, m=m, colors=all_colors,
-            trial_num=trial_num,
-            audio_word=trial['audio_word'],
-            correct_answer= trial['correct_answer'],
-            incorrect_answer1=trial['incorrect_answer1'],
-            incorrect_answer2=trial['incorrect_answer2'],
-            options_texts=trial['options_texts'],
-        )
+        for i, trial in enumerate(part1_trials, start=1):
+            if i < restart_at:
+                continue
+            chosen_answer = run_task2_part1(
+                win=win, m=m, colors=all_colors,
+                trial_num=i,
+                sentence_a=trial['sentence_a'],
+                sentence_a_audio=trial['sentence_a_audio'],
+                sentence_b=trial['sentence_b'],
+                sentence_b_audio=trial['sentence_b_audio'],
+                speaker=speaker,
+            )
 
-        # if geen betekenis then its the incongruent condition
-        if trial['correct_answer'] == 'geen betekenis':
-            condition_task2 = 'incongruent'
-        else:
-            condition_task2 = 'congruent'
+            participant_results.append({
+                'participant_id': participant_id,
+                'random_seed':    random_seed,
+                'part':           1,
+                'trial_num':      i,
+                'condition':      trial['condition'],
+                'sentence_a':     trial['sentence_a'],
+                'sentence_b':     trial['sentence_b'],
+                'chosen_answer':  chosen_answer,
+            })
 
-        participant_results.append({
-            'participant_id': participant_id,
-            'random_seed':    random_seed,
-            'part':           2,
-            'trial_num':      trial_num,
-            'trial_word':     trial['word'],
-            'condition':      condition_task2,
-            'chosen_answer':  chosen_answer,
-            'is_correct':     is_correct,
-            'confidence':     None,
-        })
-        confidence_rating = run_rating(
-            win, text_color=text_color,
-            rating_text=rating_instruction
-        )
-        participant_results.update_last(confidence=confidence_rating)
+        trial_offset = len(part1_trials)
 
-    show_instruction(win=win, text=exit_instruction, text_color=text_color)
+        # ── Part 2 ────────────────────────────────────────────────────────────────
+        show_instruction(win=win, text=part2_msg, text_color=text_color)
+
+        for j, trial in enumerate(part2_trials, start=1):
+            trial_num = j + trial_offset
+            if trial_num < restart_at:
+                continue
+            chosen_answer, is_correct = run_task2_part2(
+                win=win, m=m, colors=all_colors,
+                trial_num=trial_num,
+                audio_word=trial['audio_word'],
+                correct_answer= trial['correct_answer'],
+                incorrect_answer1=trial['incorrect_answer1'],
+                incorrect_answer2=trial['incorrect_answer2'],
+                options_texts=trial['options_texts'],
+                speaker=speaker,
+            )
+
+            # if geen betekenis then its the incongruent condition
+            if trial['correct_answer'] == 'geen betekenis':
+                condition_task2 = 'incongruent'
+            else:
+                condition_task2 = 'congruent'
+
+            participant_results.append({
+                'participant_id': participant_id,
+                'random_seed':    random_seed,
+                'part':           2,
+                'trial_num':      trial_num,
+                'trial_word':     trial['word'],
+                'condition':      condition_task2,
+                'chosen_answer':  chosen_answer,
+                'is_correct':     is_correct,
+                'confidence':     None,
+            })
+            confidence_rating = run_rating(
+                win, text_color=text_color,
+                rating_text=rating_instruction
+            )
+            participant_results.update_last(confidence=confidence_rating)
+
+        show_instruction(win=win, text=exit_instruction, text_color=text_color)
     core.quit()

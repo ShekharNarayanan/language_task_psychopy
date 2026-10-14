@@ -38,7 +38,7 @@ if __name__ == '__main__':
     from psychopy import prefs
     prefs.hardware['audioLib'] = sys_cfg['audio']['backends']
 
-    from screens.utils.audio_device import configure_audio_device
+    from screens.utils.audio_device import configure_audio_device, shared_audio_device
     configure_audio_device(prefs.hardware, 'Headphones (Realtek(R) Audio)')
 
     from psychopy import monitors, visual, core, gui
@@ -109,72 +109,80 @@ if __name__ == '__main__':
     mon.setSizePix((width_px, height_px))
 
     # create window object (dont use size until final monitor is decided)
-    win = visual.Window(
-        checkTiming=False,
-        infoMsg='',
-        monitor=mon,
-        units=window_units,
-        fullscr=full_scr,
-        color=screen_bg_color
-    )
+    with shared_audio_device() as speaker:
+        win = visual.Window(
+            checkTiming=False,
+            infoMsg='',
+            monitor=mon,
+            units=window_units,
+            fullscr=full_scr,
+            color=screen_bg_color
+        )
 
-    # create mouse object
-    m = mouse.Mouse(win=win)
+        # create mouse object
+        m = mouse.Mouse(win=win)
 
-    participant_results = TrialResults(output_path)
+        participant_results = TrialResults(output_path)
 
-    # ------------------------------------------------------------ part 1 ---------------------------------------------------------------------------------------------
-    # run process for part 1
-    if args.restart_at is None:
-        show_instruction(win=win, text=welcome_text, text_color=text_color)
-        run_audio_player(win=win, m=m, colors=all_colors, audio_path=primary_audio_part_1)
-    if restart_at <= total_trials_part_1:
-        show_instruction(win=win, text=testing_text, text_color=text_color)
+        # ------------------------------------------------------------ part 1 ---------------------------------------------------------------------------------------------
+        # run process for part 1
+        if args.restart_at is None:
+            show_instruction(win=win, text=welcome_text, text_color=text_color)
+            run_audio_player(win=win, m=m, colors=all_colors,
+                             audio_path=primary_audio_part_1, speaker=speaker)
+        if restart_at <= total_trials_part_1:
+            show_instruction(win=win, text=testing_text, text_color=text_color)
 
-    # loop all trials for part 1
-    for i in range(restart_at,total_trials_part_1+1):
+        # loop all trials for part 1
+        for i in range(restart_at,total_trials_part_1+1):
 
-        audios_i_trial = cfg_set['part_1'][f'trial_{i}']['audio_paths'] # get audios
-        correct, selected, is_correct = run_audio_mcq_part1(win,m,all_colors,audio_paths=audios_i_trial, trial_num=i) # show options to choose from
-        
-        # save participant info
-        participant_results.append({
-        'participant_id'  :  participant_id,
-        'part'            :  1,
-        'trial_num'       :  i,
-        'correct_option'  :  correct,
-        'selected_option' :  selected,
-        'is_correct'      :  is_correct, 
-        'confidence'      :  None
-        })
-        confidence_rating = run_rating(win,text_color=text_color,rating_text=rating_instruction) # show confidence screen
-        participant_results.update_last(confidence=confidence_rating)
+            audios_i_trial = cfg_set['part_1'][f'trial_{i}']['audio_paths'] # get audios
+            correct, selected, is_correct = run_audio_mcq_part1(
+                win, m, all_colors, audio_paths=audios_i_trial,
+                trial_num=i, speaker=speaker,
+            )
 
-    trial_offset = total_trials_part_1 # remember the trial at which part 1 ended
+            # save participant info
+            participant_results.append({
+            'participant_id'  :  participant_id,
+            'part'            :  1,
+            'trial_num'       :  i,
+            'correct_option'  :  correct,
+            'selected_option' :  selected,
+            'is_correct'      :  is_correct,
+            'confidence'      :  None
+            })
+            confidence_rating = run_rating(win,text_color=text_color,rating_text=rating_instruction) # show confidence screen
+            participant_results.update_last(confidence=confidence_rating)
 
-    # ------------------------------------------------------------ part 2 ---------------------------------------------------------------------------------------------
-    # show transition screen to part 2
-    show_instruction(win=win, text=part2_msg, text_color=text_color)
+        trial_offset = total_trials_part_1 # remember the trial at which part 1 ended
 
-    for j in range(max(1, restart_at - trial_offset),total_trials_part_2+1):
-        trial_num       = j + trial_offset # include offset, use this number to display on screen and in the participant data
-        primary_audio   = cfg_set['part_2'][f'trial_{j}']['primary_audio']
-        audios_j_trial  = cfg_set['part_2'][f'trial_{j}']['audio_paths']
-        options         = audios_j_trial
+        # ------------------------------------------------------------ part 2 ---------------------------------------------------------------------------------------------
+        # show transition screen to part 2
+        show_instruction(win=win, text=part2_msg, text_color=text_color)
 
-        correct, selected, is_correct = run_audio_mcq_part2(win=win,m=m,colors=all_colors,primary_audio=primary_audio,audio_paths=options,trial_num=trial_num)
+        for j in range(max(1, restart_at - trial_offset),total_trials_part_2+1):
+            trial_num       = j + trial_offset # include offset, use this number to display on screen and in the participant data
+            primary_audio   = cfg_set['part_2'][f'trial_{j}']['primary_audio']
+            audios_j_trial  = cfg_set['part_2'][f'trial_{j}']['audio_paths']
+            options         = audios_j_trial
 
-        participant_results.append({
-        'participant_id'  :  participant_id,
-        'part'            :  2,
-        'trial_num'       :  trial_num,
-        'correct_option'  :  correct,
-        'selected_option' :  selected,
-        'is_correct'      :  is_correct,   
-        'confidence'      :  None
-        })
-        confidence_rating = run_rating(win,text_color=text_color,rating_text=rating_instruction)
-        participant_results.update_last(confidence=confidence_rating)
+            correct, selected, is_correct = run_audio_mcq_part2(
+                win=win, m=m, colors=all_colors, primary_audio=primary_audio,
+                audio_paths=options, trial_num=trial_num, speaker=speaker,
+            )
 
-    show_instruction(win=win, text=exit_instruction, text_color=text_color)
+            participant_results.append({
+            'participant_id'  :  participant_id,
+            'part'            :  2,
+            'trial_num'       :  trial_num,
+            'correct_option'  :  correct,
+            'selected_option' :  selected,
+            'is_correct'      :  is_correct,
+            'confidence'      :  None
+            })
+            confidence_rating = run_rating(win,text_color=text_color,rating_text=rating_instruction)
+            participant_results.update_last(confidence=confidence_rating)
+
+        show_instruction(win=win, text=exit_instruction, text_color=text_color)
     core.quit()
